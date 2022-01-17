@@ -1,0 +1,30 @@
+input.common-input {
+  background: var(--input-background-color);
+  padding: 10px;
+  border: none;
+  border-radius: $second-border-radius;
+  color: var(--second-title-color);
+}
+
+input.common-input:focus {
+  outline: 2px solid var(--message-background-color);
+}
+
+input.common-input.input--error {
+  color: var(--danger-color);
+  outline: 2px solid var(--danger-color);
+}
+
+input.common-input.input--success {
+  color: var(--success-color);
+  outline: 2px solid var(--success-color);
+}
+
+input.common-input:-webkit-autofill,
+input.common-input:-webkit-autofill:hover,
+input.common-input:-webkit-autofill:focus {
+  //-webkit-background-clip: text;
+  -webkit-text-fill-color: var(--second-title-color);
+  -webkit-box-shadow: none;
+  transition: background-color 5000s ease-in-out 0s;
+}

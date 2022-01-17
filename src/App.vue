@@ -14,12 +14,19 @@ export default defineComponent({
   computed: {
     layout() {
       return (this.$route.meta.layout || "home") + "-layout";
-    },
+    }
   },
   components: { HomeLayout, AuthLayout }
 });
 </script>
 
 <style lang="scss">
+  *, html {
+    padding: 0;
+    margin: 0;
+  }
 
+  html {
+    background-color: var(--main-background-color);
+  }
 </style>

@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
-import authGuard from "@/middlewares/AuthGuard";
-import { UserStorageService } from "@/services/user-storage.service";
+import authGuard from "@/middlewares/auth.guard";
+import { UserStorageService } from "@/services/storage/user-storage.service";
 import Home from "../views/Home.vue";
-
 
 const routes: Array<RouteRecordRaw> = [
   {

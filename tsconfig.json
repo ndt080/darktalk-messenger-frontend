@@ -15,9 +15,13 @@
       "webpack-env"
     ],
     "paths": {
-      "@/*": [
-        "src/*"
-      ]
+      "~models": ["src/core/models/*"],
+      "~consts": ["src/core/consts/*"],
+      "~middlewares": ["src/middlewares/*"],
+      "~services": ["src/services/*"],
+      "~router": ["src/router/*"],
+      "~store": ["src/store/*"],
+      "@/*": ["src/*"]
     },
     "lib": [
       "esnext",

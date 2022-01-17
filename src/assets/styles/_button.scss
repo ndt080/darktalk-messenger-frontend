@@ -1,0 +1,21 @@
+button.primary-btn {
+  padding: 10px 20px;
+  background-color: var(--success-color);
+  border: none;
+  border-radius: $second-border-radius;
+  color: var(--main-title-color);
+  transition: 0.5s all;
+  cursor: pointer;
+}
+
+button.primary-btn:hover {
+  transition: 0.5s all;
+  background-color:  transparent;
+}
+
+button.primary-btn:disabled {
+  background-color: gray;
+  cursor: default;
+}
+
+
