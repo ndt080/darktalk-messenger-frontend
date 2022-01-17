@@ -1,0 +1,55 @@
+import { StoreOptions } from "vuex";
+import { State } from "@/store/models/state.model";
+import { User } from "@/core/models/user.model";
+import ApiAuthService from "@/services/api/api-auth.service";
+import UserMapperUtil from "@/utils/user-mapper.util";
+import NotificationService from "@/services/notification.service";
+import { UserStorageService } from "@/services/storage/user-storage.service";
+import TokenStorageService from "@/services/storage/token-storage.service";
+import { Tokens } from "@/core/models/tokens.model";
+
+const AuthStoreModule: StoreOptions<State> = {
+  state: <State>{
+    user: {}
+  },
+  mutations: {
+    setUser(state, user) {
+      state.user = user;
+    },
+    clearModule(state) {
+      state.user = {};
+    }
+  },
+  actions: {
+    async login({commit}, user: User) {
+      try {
+        await ApiAuthService.signIn(UserMapperUtil.mapToUserRequest(user)).then((response) => {
+          const currentUser = UserMapperUtil.mapToUser(response?.data);
+
+          UserStorageService.saveUser(currentUser);
+          TokenStorageService.saveTokens(currentUser.tokens as Tokens);
+
+          commit("setUser", currentUser);
+          NotificationService.success("Success sign in!");
+        }).catch(error => NotificationService.error("Error!", error.message))
+      } catch (error) {
+        NotificationService.error("Error!", error)
+      }
+    },
+
+    async registration(_, user: User) {
+      try {
+        await ApiAuthService.signUp(UserMapperUtil.mapToUserRequest(user))
+          .then(() => NotificationService.success("Success sign up!"))
+          .catch(error => NotificationService.error("Error!", error.message))
+      } catch (error) {
+        NotificationService.error("Error!", error)
+      }
+    }
+  },
+  getters: {
+    user: state => state.user,
+  }
+};
+
+export default AuthStoreModule;
