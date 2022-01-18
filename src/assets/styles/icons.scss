@@ -7,17 +7,9 @@
 
 .app-icons {
   font-family: 'AppIcons' !important;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  display: inline-block;
   font-style: normal;
-  font-variant: normal;
-  text-rendering: auto;
+  font-weight: normal;
   line-height: 1;
-}
-
-.icon-plane:before {
-  content: "\e901";
 }
 
 .icon-grid:before {
