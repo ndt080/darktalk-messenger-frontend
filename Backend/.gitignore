@@ -1,0 +1,12 @@
+*.drawio
+*.png
+*.jpg
+
+__pycache__/
+.idea/
+migrations/
+static/
+
+*.env
+
+pyrightconfig.json
