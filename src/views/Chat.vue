@@ -1,6 +1,6 @@
 <template>
   <div class="chat__wrapper">
-    <TopChatBar></TopChatBar>
+    <ChatHeader></ChatHeader>
     <div class="chat__message_list">
 
     </div>
@@ -12,11 +12,11 @@
 import { defineComponent } from "vue";
 import TokenStorageService from "@/services/storage/token-storage.service";
 import BottomChatBar from "@/components/chat-bars/BottomChatBar.vue";
-import TopChatBar from "@/components/chat-bars/TopChatBar.vue";
+import ChatHeader from "@/components/chat-bars/ChatHeader.vue";
 
 export default defineComponent({
   name: "Chat",
-  components: { TopChatBar, BottomChatBar },
+  components: { ChatHeader, BottomChatBar },
   data: () => ({
     chatId: "",
     connection: {} as WebSocket,
