@@ -4,6 +4,7 @@
 
   --message-background-color: rgba(40, 41, 45, 1);
   --card-background-color: rgb(31, 32, 34);
+  --popup-background-color: rgb(50, 51, 55);
   --input-background-color: rgba(28, 29, 31, 1);
   --divider-color: rgba(39, 41, 40, 1);
 
@@ -23,18 +24,13 @@
 
   --message-background-color: rgb(242, 243, 247);
   --card-background-color: rgb(227, 234, 242);
+  --popup-background-color: rgb(50, 51, 55);
   --input-background-color: rgba(28, 29, 31, 1);
   --divider-color: rgb(227, 234, 242);
 
   --dark-title-color: rgb(0, 0, 0);
   --main-title-color: rgb(19, 23, 52);
   --second-title-color: rgb(124, 140, 166);
-
-  --primary-color: rgb(67, 160, 255);
-  --success-color: rgb(110, 207, 151);
-  --danger-color: rgb(247, 114, 73);
-  --warning-color: rgb(254, 222, 107);
-
 }
 
 //FONT VARIABLE
@@ -43,3 +39,10 @@ $font-family: 'Montserrat', sans-serif;
 //BORDER VARIABLE
 $main-border-radius: 20px;
 $second-border-radius: 10px;
+
+
+//SCSS DUPLICATE VARIABLE
+$primary-color: rgb(67, 160, 255);
+$success-color: rgba(110, 207, 151, 1);
+$danger-color: rgb(247, 114, 73);
+$warning-color: rgb(254, 222, 107);

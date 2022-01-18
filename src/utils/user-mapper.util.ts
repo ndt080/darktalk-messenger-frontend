@@ -4,7 +4,7 @@ import { User } from "@/core/models/user.model";
 class UserMapperUtil {
   mapToUser(user: UserRequest): User {
     return {
-      id: user.user_id,
+      id: user.id,
       email: user.email,
       username: user.user_name,
       password: user.password,
@@ -19,7 +19,7 @@ class UserMapperUtil {
 
   mapToUserRequest(user: User): UserRequest {
     return {
-      user_id: user.id,
+      id: user.id,
       email: user.email,
       password: user.password,
       user_name: user.username,

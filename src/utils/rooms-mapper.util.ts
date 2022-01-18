@@ -4,7 +4,7 @@ import { RoomUser } from "@/core/models/room-user.model";
 import { RoomUserRequest } from "@/core/models/api/room-user-request.model";
 import UserMapperUtil from "@/utils/user-mapper.util";
 
-class RoomMapperUtil {
+class RoomsMapperUtil {
   private mapToRoomUser = (roomUsers: RoomUserRequest[]): RoomUser[] => roomUsers.map(roomUser => ({
     user: UserMapperUtil.mapToUser(roomUser.user),
     role: roomUser.role
@@ -14,6 +14,9 @@ class RoomMapperUtil {
     user: UserMapperUtil.mapToUserRequest(roomUser.user),
     role: roomUser.role
   }));
+
+  mapToRooms = (rooms: RoomRequest[]): Room[] => rooms.map(room => this.mapToRoom(room));
+  mapToRoomsRequest = (rooms: Room[]): RoomRequest[] => rooms.map(room => this.mapToRoomRequest(room));
 
   mapToRoom = (room: RoomRequest): Room => ({
     id: room.id,
@@ -34,4 +37,4 @@ class RoomMapperUtil {
   });
 }
 
-export default new RoomMapperUtil();
+export default new RoomsMapperUtil();

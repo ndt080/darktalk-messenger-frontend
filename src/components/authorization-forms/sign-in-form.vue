@@ -42,7 +42,6 @@ import { defineComponent, reactive } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, minLength, required } from "@vuelidate/validators";
 import { User } from "@/core/models/user.model";
-import NotificationService from "@/services/notification.service";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 
 export default defineComponent({
