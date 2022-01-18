@@ -1,5 +1,5 @@
 export interface UserRequest {
-  "user_id"?: number;
+  "id"?: number;
   "email"?: string;
   "password"?: string;
   "user_name"?: string;

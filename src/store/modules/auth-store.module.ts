@@ -10,7 +10,7 @@ import { Tokens } from "@/core/models/tokens.model";
 
 const AuthStoreModule: StoreOptions<State> = {
   state: <State>{
-    user: {}
+    user: UserStorageService.getUser(),
   },
   mutations: {
     setUser(state, user) {
@@ -42,6 +42,16 @@ const AuthStoreModule: StoreOptions<State> = {
         await ApiAuthService.signUp(UserMapperUtil.mapToUserRequest(user))
           .then(() => NotificationService.success("Success sign up!"))
           .catch(error => NotificationService.error("Error!", error.message))
+      } catch (error) {
+        NotificationService.error("Error!", error)
+      }
+    },
+
+    logout({commit}) {
+      try {
+        UserStorageService.removeUser()
+        TokenStorageService.removeTokens()
+        commit('clearModule')
       } catch (error) {
         NotificationService.error("Error!", error)
       }

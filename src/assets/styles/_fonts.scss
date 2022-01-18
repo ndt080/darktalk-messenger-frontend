@@ -25,14 +25,34 @@ $font-family: 'Montserrat', sans-serif;
 
 //TITLE FONT
 .title {
+  &-regular-10 {
+    @include montserrat-regular;
+    font-size: 10px;
+  }
+
+  &-regular-12 {
+    @include montserrat-regular;
+    font-size: 12px;
+  }
+
   &-regular-14 {
     @include montserrat-regular;
     font-size: 14px;
   }
 
+  &-regular-18 {
+    @include montserrat-regular;
+    font-size: 18px;
+  }
+
   &-regular-28 {
     @include montserrat-regular;
     font-size: 28px;
+  }
+
+  &-semi-26 {
+    @include montserrat-semi;
+    font-size: 26px;
   }
 
   &-semi-32 {
@@ -45,4 +65,8 @@ $font-family: 'Montserrat', sans-serif;
     @include montserrat-semi;
     font-size: 18px;
   }
+}
+
+.primary {
+  color: var(--primary-color);
 }
