@@ -62,14 +62,7 @@ export default defineComponent({
     }
 
     &__avatar {
-      //font-size: 0;
       align-self: flex-start;
-      //
-      //img {
-      //  width: 30px;
-      //  height: 30px;
-      //  border-radius: 50%;
-      //}
     }
 
     &__input {
@@ -77,10 +70,6 @@ export default defineComponent({
       padding: 0 30px 0 15px;
       height: 100%;
       width: 100%;
-
-      .common-input {
-        width: 100%;
-      }
     }
 
     &__send_btn {

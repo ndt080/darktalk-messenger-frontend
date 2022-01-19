@@ -31,7 +31,8 @@ export default defineComponent({
       this.$emit('update:value', this.textarea.innerText)
     },
     setCaretPosition() {
-      const lastLine = this.textarea.innerHTML.replace(/.*?(<br>)/g, '');
+      const tmp = this.textarea.innerHTML.replace(/.*?(<br>)/g, '');
+      const lastLine = tmp.replace(/&nbsp;/gi," ");
       const selection = window.getSelection();
       selection?.collapse(this.textarea.childNodes[this.textarea.childNodes.length - 1], lastLine.length);
     }
@@ -55,9 +56,11 @@ export default defineComponent({
 
 .text-field {
   padding: 5px;
-  display: inline-block;
+  display: block;
+  overflow-y: auto;
   color: var(--main-title-color);
-  white-space: pre;
+  white-space: pre-line;
+  max-height: 200px;
 }
 
 .text-field:focus {
