@@ -52,6 +52,9 @@
             </option>
           </select>
         </div>
+        <div class="chat-creator__form_input">
+          <Autocomplete placeholder="Search users"></Autocomplete>
+        </div>
       </form>
     </div>
   </div>
@@ -63,12 +66,13 @@ import { RouterPaths } from "@/core/consts/router-paths.enum";
 import { minLength, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { RoomType } from "@/core/consts/room-type.enum";
+import Autocomplete from "@/components/autocomplete/Autocomplete.vue";
 
 export default defineComponent({
   name: "ChatCreator",
+  components: { Autocomplete },
   setup() {
     const roomTypes = Object.values(RoomType);
-
 
     const state = reactive({
       title: "",
@@ -144,27 +148,20 @@ export default defineComponent({
   &__form {
     &_input {
       margin-bottom: 20px;
-    }
-
-    &_input input {
       min-width: 250px;
       width: 50%;
     }
 
-    &_input select {
-      min-width: calc(250px + 20px);
-      width: calc(50% + 20px);
+    &_input input, &_input select {
+      width: 100%;
     }
   }
 }
 
 @media screen and (max-width: 650px) {
   .chat-creator {
-    &__form_input input {
+    &__form_input {
       width: 95%;
-    }
-    &__form_input select {
-      width: calc(95% + 20px);
     }
   }
 }

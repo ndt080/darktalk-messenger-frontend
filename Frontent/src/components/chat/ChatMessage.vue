@@ -78,10 +78,19 @@ export default defineComponent({
     color: var(--main-title-color);
 
     &_message {
+      display: inline-block;
+      white-space: pre-line;
+
       margin-top: 10px;
       padding: 10px 10px;
       background: var(--message-background-color);
       border-radius: 0 15px 15px 15px;
+
+      overflow-wrap: normal;  /* не поддерживает IE, Firefox; является копией word-wrap */
+      word-wrap: normal;
+      word-break: normal;  /* не поддерживает Opera12.14, значение keep-all не поддерживается IE, Chrome */
+      line-break: auto;  /* нет поддержки для русского языка */
+      hyphens: manual;
     }
   }
 }
@@ -99,8 +108,6 @@ export default defineComponent({
   }
 
   .chat-message__content_message {
-    display: inline-block;
-    white-space: pre;
     background: var(--primary-color);
     border-radius: 15px 0 15px 15px;
   }
@@ -120,6 +127,22 @@ export default defineComponent({
   .chat-message__content_message {
     margin: 0;
     border-radius: 15px;
+  }
+}
+
+@media screen and (max-width: 650px){
+  .chat-message {
+    &__avatar {
+      margin-left: 0;
+      margin-right: 10px;
+    }
+
+  }
+  .chat-message.chat-message--my_message {
+    .chat-message__avatar {
+      margin-right: 0;
+      margin-left: 10px;
+    }
   }
 }
 </style>
