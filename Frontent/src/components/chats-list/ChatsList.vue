@@ -3,7 +3,9 @@
     <div id="chats-list__header" class="chats-list__header">
       <div class="chats-list__title title-semi-26">Messages</div>
       <div class="chats-list__toolbar">
-        <i class="chats-list__toolbar_icon fas fa-edit"></i>
+        <router-link :to="createChatUrl" class="chats-list__toolbar_item">
+          <i class="chats-list__toolbar_icon fas fa-edit"></i>
+        </router-link>
       </div>
     </div>
 
@@ -29,6 +31,7 @@
 import { defineComponent } from "vue";
 import ChatsListCard from "@/components/chats-list/ChatsListCard.vue";
 import { Room } from "@/core/models/room.model";
+import { RouterPaths } from "@/core/consts/router-paths.enum";
 
 export default defineComponent({
   name: "ChatsList",
@@ -38,6 +41,11 @@ export default defineComponent({
   }),
   mounted() {
     this.cards = this.$store.getters.rooms;
+  },
+  computed: {
+    createChatUrl(): string {
+      return `/${RouterPaths.CREATE_CHAT}`;
+    }
   }
 });
 </script>

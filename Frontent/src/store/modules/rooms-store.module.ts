@@ -8,7 +8,7 @@ import { Room } from "@/core/models/room.model";
 const RoomsStoreModule: StoreOptions<State> = {
   state: <State>{
     rooms: [],
-    openedRoom: {} as Room,
+    openedRoom: {} as Room
   },
   mutations: {
     setRooms(state, rooms) {
@@ -23,33 +23,44 @@ const RoomsStoreModule: StoreOptions<State> = {
     }
   },
   actions: {
-    async getRooms({commit}) {
+    async getRooms({ commit }) {
       try {
         await ApiRoomsService.getAllUserRooms().then((response) => {
           const rooms = RoomsMapperUtil.mapToRooms(response?.data);
 
           commit("setRooms", rooms);
-        })
+        });
       } catch (error) {
-        NotificationService.error("Error!", error)
+        NotificationService.error("Error!", error);
       }
     },
 
-    async getRoomById({commit}, id: string) {
+    async getRoomById({ commit }, id: string) {
       try {
         await ApiRoomsService.getRoomById(id).then((response) => {
           const room = RoomsMapperUtil.mapToRoom(response?.data);
 
           commit("setOpenedRoom", room);
-        })
+        });
       } catch (error) {
-        NotificationService.error("Error!", error)
+        NotificationService.error("Error!", error);
       }
+    },
+    addMessageToRoom({ commit, getters }, { roomId, message }) {
+      const rooms = getters.rooms as Room[];
+      const openedRoom = getters.openedRoom as Room;
+      rooms.forEach((room: Room) => {
+        if (room.id == roomId) room.messages.push(message);
+      });
+
+      openedRoom.messages.push(message);
+      commit("setRooms", rooms);
+      commit("setOpenedRoom", openedRoom);
     }
   },
   getters: {
     rooms: state => state.rooms,
-    openedRoom: state => state.openedRoom,
+    openedRoom: state => state.openedRoom
   }
 };
 

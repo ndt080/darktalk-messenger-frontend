@@ -44,7 +44,8 @@ export default defineComponent({
   padding: 20px;
   align-items: center;
   height: 30px;
-  box-shadow: 0 30px 10px -10px var(--main-background-color);
+  background: var(--main-background-color);
+  box-shadow: 0 15px 15px -5px var(--main-background-color);
 
   &__back {
     font-size: 20px;

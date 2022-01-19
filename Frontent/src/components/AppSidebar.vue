@@ -63,6 +63,7 @@ export default defineComponent({
   width: 100%;
   height: 100vh;
   overflow-y: scroll;
+  scroll-behavior: smooth;
   padding: 20px 30px;
 
   &__header {
