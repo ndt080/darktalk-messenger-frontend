@@ -29,7 +29,9 @@ Frontend часть Messenger написана с использованием j
 
 Для тестирования приложения используется модуль pytest. При инициализации входных данных для тестов используется модуль factory-boy, а для тестирования веб сокетов - pytest-asyncio.
 
-<img align="left" src="Screenshots/4.jpg" height="200" />
+<img src="Screenshots/4.jpg" height="200" />
+
+
 
 
 ## Kubernetes
