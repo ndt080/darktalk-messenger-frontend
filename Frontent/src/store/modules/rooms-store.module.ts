@@ -46,16 +46,15 @@ const RoomsStoreModule: StoreOptions<State> = {
         NotificationService.error("Error!", error);
       }
     },
-    addMessageToRoom({ commit, getters }, { roomId, message }) {
-      const rooms = getters.rooms as Room[];
-      const openedRoom = getters.openedRoom as Room;
-      rooms.forEach((room: Room) => {
-        if (room.id == roomId) room.messages.push(message);
-      });
 
-      openedRoom.messages.push(message);
-      commit("setRooms", rooms);
-      commit("setOpenedRoom", openedRoom);
+    async createRoom({ dispatch }, data) {
+      try {
+        await ApiRoomsService.createRoom(data).then(() => {
+          dispatch('getRooms');
+        });
+      } catch (error) {
+        NotificationService.error("Error!", error);
+      }
     }
   },
   getters: {

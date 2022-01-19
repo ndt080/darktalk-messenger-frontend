@@ -1,45 +1,67 @@
 <template>
   <div class="autocomplete">
     <input
-      ref="autocomplete"
+      ref="autocompleteInput"
       type="search"
       :placeholder="placeholder"
       class="autocomplete__input common-input title-regular-14"
       @input.prevent="onChangeValue"
     />
-    <ul class="autocomplete__list">
+    <ul class="autocomplete__list" :class="{'active': this.isShowList}">
+      <li v-for="(item, index) of data" :key="index" @click.prevent="onItemSelected(item)">
+        <slot :item="item"></slot>
+      </li>
     </ul>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
   name: "Autocomplete",
   data: () => ({
-    autocomplete: {} as HTMLElement
+    autocompleteInput: {} as HTMLInputElement,
+    isShowList: false,
   }),
   props: {
-    value: String,
+    value: {
+      type: String,
+      default: ""
+    },
+    data: Object as PropType<any[]>,
     placeholder: {
       type: String,
       default: "Search"
-    }
+    },
   },
-  emits: ["update:value"],
+  emits: ["update:value", "itemSelect"],
   mounted() {
-    this.autocomplete = (this.$refs.autocomplete as HTMLElement);
-    this.autocomplete.textContent = this.value as string;
+    this.autocompleteInput = (this.$refs.autocompleteInput as HTMLInputElement);
+    this.autocompleteInput.value = this.value as string;
   },
   methods: {
-    onChangeValue() {
-      this.$emit("update:value", this.autocomplete.textContent);
+    async onChangeValue() {
+      const value = this.autocompleteInput.value.split('').length;
+
+      if(value > 1) {
+        this.$emit("update:value", this.autocompleteInput.value);
+      } else {
+        this.isShowList = false;
+      }
+    },
+    onItemSelected(item: any) {
+      this.autocompleteInput.value = "";
+      this.isShowList = false;
+      this.$emit('itemSelect', item)
     }
   },
   watch: {
-    value(newValue) {
-      this.autocomplete.textContent = newValue;
+    value(value) {
+      this.autocompleteInput.value = value;
+    },
+    data(value) {
+      this.isShowList = value?.length > 0;
     }
   }
 });
@@ -56,17 +78,20 @@ export default defineComponent({
 
   &__list {
     display: none;
+    visibility: hidden;
+    height: 0;
   }
 
   &__list.active {
+    visibility: visible;
     position: absolute;
     display: block;
     list-style: none;
     left: 0;
     right: 0;
-    top: -10px;
 
-    height: 100px;
+    min-height: 40px;
+    height: auto;
     border-radius: 15px;
     padding: 15px;
     background: var(--card-background-color);

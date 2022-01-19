@@ -2,6 +2,9 @@ import { UserRequest } from "@/core/models/api/user-request.model";
 import { User } from "@/core/models/user.model";
 
 class UserMapperUtil {
+  mapToUsers = (users: UserRequest[]): User[] => users.map(user => this.mapToUser(user));
+  mapToUsersRequest = (users: User[]): UserRequest[] => users.map(user => this.mapToUserRequest(user));
+
   mapToUser(user: UserRequest): User {
     return {
       id: user.id,
