@@ -1,4 +1,4 @@
-input.common-input {
+input.common-input, select.common-input {
   background: var(--input-background-color);
   padding: 10px;
   border: none;
@@ -6,18 +6,26 @@ input.common-input {
   color: var(--second-title-color);
 }
 
-input.common-input:focus {
+input.common-input:focus, select.common-input:focus {
   outline: 2px solid var(--message-background-color);
 }
 
-input.common-input.input--error {
+input.common-input.input--error, select.common-input.input--error {
   color: var(--danger-color);
   outline: 2px solid var(--danger-color);
+
+  option {
+    color: var(--second-title-color);
+  }
 }
 
-input.common-input.input--success {
+input.common-input.input--success, select.common-input.input--success {
   color: var(--success-color);
   outline: 2px solid var(--success-color);
+
+  option {
+    color: var(--second-title-color);
+  }
 }
 
 input.common-input:-webkit-autofill,
@@ -27,4 +35,10 @@ input.common-input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--second-title-color);
   -webkit-box-shadow: none;
   transition: background-color 5000s ease-in-out 0s;
+}
+
+select.common-input {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
 }

@@ -27,7 +27,7 @@ const routes: Array<RouteRecordRaw> = [
     path: `/${RouterPaths.CREATE_CHAT}`,
     name: "CreateChat",
     meta: { layout: "home", auth: true },
-    component: () => import("../views/CreateChat.vue")
+    component: () => import("../views/ChatCreator.vue")
   },
   {
     path: "/about",
