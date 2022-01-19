@@ -1,9 +1,9 @@
 # Messenger
 
 ## Demo and OpenApi
-> <a href="https://hotfire-chat.web.app/">Messanger.Frontend</a> <br/>
-> <a href="https://fakemessenger.herokuapp.com/swagger/">Messanger.Backend</a> <br/>
-> <a href="https://chat-app.c-2181e3e.kyma.ondemand.com//swagger/">Messanger.Backend (Cluster)</a>
+> <a href="https://hotfire-chat.web.app/">Messenger.Frontend</a> <br/>
+> <a href="https://fakemessenger.herokuapp.com/swagger/">Messenger.Backend</a> <br/>
+> <a href="https://chat-app.c-2181e3e.kyma.ondemand.com//swagger/">Messenger.Backend (Cluster)</a>
 
 ### Задача:
 1. Спроектировать под микросервисную архитектуру чат (систему обмена короткими сообщениями) с сохранением и архивированием истории переписки и другой обычной функциональностью. 
@@ -11,7 +11,7 @@
 3. Продемонстрировать возможности использования программных платформы для кластеризации контейнеров, оркестрации и планирования (Kubernetes, Служба Azure Kubernetes (AKS) или другие).
 4. Предусмотреть возможность масштабирования микросервисов (микросервиса) при росте заявок на обслуживание. Эмулировать поток заявок и продемонстрировать эффект масштабирования.
 
-## Messanger.Frontend
+## Messenger.Frontend
 Frontend часть Messenger написана с использованием javascript фреймворка VueJS 3 (Typescript) с поддержкой технологии PWA.
 Обращение к api веб-сервера для получения данных из базы и системы авторизации, предоставляющей токены доступа, происходит посредством протокола HTTP/HTTPS через http клиент Axios. Обмен сообщениям между пользователями в реальном времени происходит посредством установки постоянного соединения по протоколу Websocket.
 Приложение развернуто на платформе Firebase Hosting.
@@ -24,7 +24,7 @@ Frontend часть Messenger написана с использованием j
 
 
 
-## Messanger.Backend
+## Messenger.Backend
 Серверная часть Messenger написана с использованием высокоуровневого веб-фреймворка Django на языка программирования Python. <br/> 
 Для реализации RESTful API был использован framework Django REST. Поддержка веб сокетов осуществлена с помощью Django Channels, а в качестве сервера приложения, основанного на спецификации ASGI (Asynchronous Server Gateway Interface), взят сервер Daphne. Также в связке с Django Channels для передачи сообщений использовался Redis.
 В качестве веб-сервера используется Nginx.
