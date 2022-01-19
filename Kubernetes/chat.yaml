@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-app
+spec:
+  selector:
+    matchLabels:
+      run: chat-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: chat-app
+    spec:
+      containers:
+      - name: web
+        image: pavelhardzei/messenger:web_v2
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: 10m
+
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+           secretKeyRef:
+             name: secret-env
+             key: SECRET_KEY
+             
+        - name: POSTGRES_NAME
+          valueFrom:
+           secretKeyRef:
+             name: secret-env
+             key: POSTGRES_NAME
+
+        - name: POSTGRES_USER
+          valueFrom:
+           secretKeyRef:
+             name: secret-env
+             key: POSTGRES_USER
+
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+           secretKeyRef:
+             name: secret-env
+             key: POSTGRES_PASSWORD
+
+        - name: POSTGRES_HOST
+          valueFrom:
+           secretKeyRef:
+             name: secret-env
+             key: POSTGRES_HOST
+
+        - name: POSTGRES_PORT
+          valueFrom:
+           secretKeyRef:
+             name: secret-env
+             key: POSTGRES_PORT
+
+        - name: REDIS_HOST
+          valueFrom:
+           secretKeyRef:
+             name: secret-env
+             key: REDIS_HOST
+
+        - name: REDIS_PORT
+          valueFrom:
+           secretKeyRef:
+             name: secret-env
+             key: REDIS_PORT
+      - name: redis
+        image: redis
+        ports:
+        - containerPort: 6379
+        resources:
+          limits:
+            cpu: 10m
