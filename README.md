@@ -22,14 +22,14 @@ Frontend часть Messenger написана с использованием j
 
 
 
-
-
 ## Messenger.Backend
 Серверная часть Messenger написана с использованием высокоуровневого веб-фреймворка Django на языка программирования Python. <br/> 
 Для реализации RESTful API был использован framework Django REST. Поддержка веб сокетов осуществлена с помощью Django Channels, а в качестве сервера приложения, основанного на спецификации ASGI (Asynchronous Server Gateway Interface), взят сервер Daphne. Также в связке с Django Channels для передачи сообщений использовался Redis.
 В качестве веб-сервера используется Nginx.
 
 Для тестирования приложения используется модуль pytest. При инициализации входных данных для тестов используется модуль factory-boy, а для тестирования веб сокетов - pytest-asyncio.
+
+<img align="left" src="Screenshots/4.jpg" height="200" />
 
 
 ## Kubernetes
@@ -48,5 +48,5 @@ Frontend часть Messenger написана с использованием j
 
 Пример масштабирования подов:
 
-<img align="left" src="Screenshots/5Gw8tjOstVg.jpg" height="200" />
+<img align="left" src="Screenshots/5.jpg" height="200" />
 
