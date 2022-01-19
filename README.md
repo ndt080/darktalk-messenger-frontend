@@ -3,7 +3,7 @@
 ## Demo and OpenApi
 > <a href="https://hotfire-chat.web.app/">Messenger.Frontend</a> <br/>
 > <a href="https://fakemessenger.herokuapp.com/swagger/">Messenger.Backend</a> <br/>
-> <a href="https://chat-app.c-2181e3e.kyma.ondemand.com//swagger/">Messenger.Backend (Cluster)</a>
+> <a href="https://chat-app.c-2181e3e.kyma.ondemand.com/swagger/">Messenger.Backend (Kubernetes)</a>
 
 ### Задача:
 1. Спроектировать под микросервисную архитектуру чат (систему обмена короткими сообщениями) с сохранением и архивированием истории переписки и другой обычной функциональностью. 
