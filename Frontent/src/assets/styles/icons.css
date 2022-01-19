@@ -1,12 +1,11 @@
 @font-face {
-  font-family: 'AppIcons';
-  src: url('../fonts/app-icon.woff') format('woff');
+  font-family: "AppIcons";
+  src: url("../fonts/app-icon.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
-
 .app-icons {
-  font-family: 'AppIcons' !important;
+  font-family: "AppIcons" !important;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -23,3 +22,5 @@
 .icon-grid:before {
   content: "\e900";
 }
+
+/*# sourceMappingURL=icons.css.map */

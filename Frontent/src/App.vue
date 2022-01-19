@@ -13,7 +13,7 @@ export default defineComponent({
   name: "App",
   computed: {
     layout() {
-      return (this.$route.meta.layout || "home") + "-layout";
+      return (this.$route.meta.layout || "main") + "-layout";
     }
   },
   components: { HomeLayout, AuthLayout }
