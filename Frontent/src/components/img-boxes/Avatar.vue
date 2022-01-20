@@ -20,7 +20,7 @@ export default defineComponent({
     },
     assetImage: {
       type: String,
-      default: "avatar.png"
+      default: "avatar"
     },
     width: {
       type: String,

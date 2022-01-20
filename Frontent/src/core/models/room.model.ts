@@ -3,7 +3,7 @@ import { Message } from "@/core/models/message.model";
 import { RoomUser } from "@/core/models/room-user.model";
 
 export interface Room {
-  id: string;
+  id: number;
   title: string;
   description: string;
   roomType: RoomType;

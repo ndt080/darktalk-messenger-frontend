@@ -93,7 +93,7 @@ import Autocomplete from "@/components/autocomplete/Autocomplete.vue";
 import ApiUserService from "@/services/api/api-user.service";
 import { User } from "@/core/models/user.model";
 import UserMapperUtil from "@/utils/user-mapper.util";
-import NotificationService from "@/services/notification.service";
+
 
 export default defineComponent({
   name: "ChatCreator",
@@ -130,9 +130,8 @@ export default defineComponent({
         title: this.state.title,
         description: this.state.description,
         room_type: this.state.roomType,
-        users: this.state.users.keys()
+        users: [...this.state.users.keys()]
       })
-        .then(() => NotificationService.success("Success create chat!"));
     },
     findUser(query: string) {
       ApiUserService.findUserByUsername(query).then(response => {
@@ -142,9 +141,9 @@ export default defineComponent({
       })
     },
     addUser(user: User) {
-      if(this.state?.users.get(user?.id as number)) return;
+      if(this.state?.users.get(user?.uid as number)) return;
 
-      this.state?.users.set(user?.id as number, user);
+      this.state?.users.set(user?.uid as number, user);
     },
     removeUser(key: number) {
       this.state?.users.delete(key);

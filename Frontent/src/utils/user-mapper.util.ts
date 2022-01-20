@@ -7,22 +7,19 @@ class UserMapperUtil {
 
   mapToUser(user: UserRequest): User {
     return {
-      id: user.id,
+      uid: user?.id,
       email: user.email,
       username: user.user_name,
       password: user.password,
       fullname: user.full_name,
       birthday: user.date_of_birth,
-      dateJoined: user.date_joined,
-      tokens: {
-        access: user.token,
-      }
+      dateJoined: user.date_joined
     }
   }
 
   mapToUserRequest(user: User): UserRequest {
     return {
-      id: user.id,
+      id: user.uid,
       email: user.email,
       password: user.password,
       user_name: user.username,

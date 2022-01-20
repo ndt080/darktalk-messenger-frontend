@@ -41,7 +41,7 @@ export default defineComponent({
     this.lastMessage = this.card?.messages[messages?.length - 1] as Message;
 
     const members = this.card?.users as RoomUser[];
-    const msgSender = members.find(roomUser => roomUser.user.id == this.lastMessage?.sender);
+    const msgSender = members.find(roomUser => roomUser.user.uid == this.lastMessage?.sender);
     this.lastMessageSender = msgSender?.user?.username as string;
   },
   computed: {

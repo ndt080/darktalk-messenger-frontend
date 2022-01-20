@@ -14,6 +14,11 @@ const RoomsStoreModule: StoreOptions<State> = {
     setRooms(state, rooms) {
       state.rooms = rooms;
     },
+    setMessageToRoom(state, message) {
+      const room = state.openedRoom as Room;
+      room.messages.push(message);
+      state.openedRoom = room;
+    },
     setOpenedRoom(state, room) {
       state.openedRoom = room;
     },
@@ -31,7 +36,7 @@ const RoomsStoreModule: StoreOptions<State> = {
           commit("setRooms", rooms);
         });
       } catch (error) {
-        NotificationService.error("Error!", error);
+        NotificationService.error("Error!", error.message);
       }
     },
 
@@ -39,7 +44,7 @@ const RoomsStoreModule: StoreOptions<State> = {
       try {
         await ApiRoomsService.getRoomById(id).then((response) => {
           const room = RoomsMapperUtil.mapToRoom(response?.data);
-
+          room.messages.reverse();
           commit("setOpenedRoom", room);
         });
       } catch (error) {
@@ -50,6 +55,7 @@ const RoomsStoreModule: StoreOptions<State> = {
     async createRoom({ dispatch }, data) {
       try {
         await ApiRoomsService.createRoom(data).then(() => {
+          NotificationService.success("Success create chat!");
           dispatch('getRooms');
         });
       } catch (error) {

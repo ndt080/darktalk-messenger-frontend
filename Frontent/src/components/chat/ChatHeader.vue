@@ -34,7 +34,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chat-header {
-  position: absolute;
+  position: sticky;
   display: flex;
   top: 0;
   left: 0;

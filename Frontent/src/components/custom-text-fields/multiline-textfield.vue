@@ -4,44 +4,62 @@
     ref="multiline_text_field"
     contenteditable="true"
     :placeholder="placeholder"
-    @input.prevent="onChangeValue"
-  >
-  </div>
+    aria-multiline="true"
+    @input.prevent="onChangeValue($event)"
+  ></div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "multiline-text-field",
+  name: "multiline-textfield",
   data: () => ({
     textarea: {} as HTMLElement,
   }),
   props: {
     value: String,
+    isSubmittable: Boolean,
     placeholder: String,
   },
-  emits: ['update:value'],
+  emits: ['update:value', 'submit'],
   mounted() {
     this.textarea = (this.$refs.multiline_text_field as HTMLElement);
-    this.textarea.innerText = this.value as string;
+
+    this.textarea.addEventListener('keydown', (event: KeyboardEvent) => {
+      if(event.keyCode == 13 && !event.shiftKey) {
+        event.preventDefault();
+        this.submit();
+        return false;
+      }
+
+      if(event.shiftKey && event.keyCode == 13) {
+        event.preventDefault();
+        this.textarea.innerText += "\n\n"
+        this.setCaretPosition();
+      }
+    })
   },
   methods: {
-    onChangeValue() {
-      this.$emit('update:value', this.textarea.innerText)
-    },
     setCaretPosition() {
       const tmp = this.textarea.innerHTML.replace(/.*?(<br>)/g, '');
       const lastLine = tmp.replace(/&nbsp;/gi," ");
       const selection = window.getSelection();
       selection?.collapse(this.textarea.childNodes[this.textarea.childNodes.length - 1], lastLine.length);
-    }
+    },
+    submit() {
+      this.$emit('submit', this.textarea.textContent);
+    },
+    onChangeValue() {
+      this.$emit('update:value', this.textarea.innerText);
+    },
   },
   watch: {
     value(newValue) {
       this.textarea.innerText = newValue.replace(/(\*\*|__)(.*?)\1/g, "<strong>$2</strong>");
       this.setCaretPosition();
-    }
+    },
+
   }
 });
 </script>
@@ -55,12 +73,31 @@ export default defineComponent({
 }
 
 .text-field {
-  padding: 5px;
   display: block;
-  overflow-y: auto;
-  color: var(--main-title-color);
-  white-space: pre-line;
+  padding: 5px;
+  overflow: auto;
+  border: none;
+  width: 100%;
   max-height: 200px;
+  white-space: pre-line;
+
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+  hyphens: auto;
+  -ms-word-break: break-all;
+  word-break: break-all;
+
+  color: var(--main-title-color);
+
+  -webkit-line-break: after-white-space;
+  -webkit-user-modify: read-write;
+    line-break: after-white-space;
+  overflow-wrap: break-word;
+}
+
+.text-field::-webkit-scrollbar {
+  display: none;
 }
 
 .text-field:focus {
