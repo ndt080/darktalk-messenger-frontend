@@ -44,7 +44,6 @@ const RoomsStoreModule: StoreOptions<State> = {
       try {
         await ApiRoomsService.getRoomById(id).then((response) => {
           const room = RoomsMapperUtil.mapToRoom(response?.data);
-          room.messages.reverse();
           commit("setOpenedRoom", room);
         });
       } catch (error) {

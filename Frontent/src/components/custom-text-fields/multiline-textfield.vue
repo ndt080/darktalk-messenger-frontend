@@ -25,22 +25,20 @@ export default defineComponent({
   emits: ['update:value', 'submit'],
   mounted() {
     this.textarea = (this.$refs.multiline_text_field as HTMLElement);
-
-    this.textarea.addEventListener('keydown', (event: KeyboardEvent) => {
+    this.textarea.addEventListener('keydown', (e) => this.handlePressingEnter(e));
+  },
+  methods: {
+    handlePressingEnter(event: KeyboardEvent) {
       if(event.keyCode == 13 && !event.shiftKey) {
         event.preventDefault();
         this.submit();
         return false;
-      }
-
-      if(event.shiftKey && event.keyCode == 13) {
+      } else if(event.shiftKey && event.keyCode == 13) {
         event.preventDefault();
         this.textarea.innerText += "\n\n"
         this.setCaretPosition();
       }
-    })
-  },
-  methods: {
+    },
     setCaretPosition() {
       const tmp = this.textarea.innerHTML.replace(/.*?(<br>)/g, '');
       const lastLine = tmp.replace(/&nbsp;/gi," ");
@@ -59,7 +57,9 @@ export default defineComponent({
       this.textarea.innerText = newValue.replace(/(\*\*|__)(.*?)\1/g, "<strong>$2</strong>");
       this.setCaretPosition();
     },
-
+  },
+  unmounted() {
+    this.textarea.removeEventListener('keydown', (e) => this.handlePressingEnter(e))
   }
 });
 </script>
@@ -89,11 +89,6 @@ export default defineComponent({
   word-break: break-all;
 
   color: var(--main-title-color);
-
-  -webkit-line-break: after-white-space;
-  -webkit-user-modify: read-write;
-    line-break: after-white-space;
-  overflow-wrap: break-word;
 }
 
 .text-field::-webkit-scrollbar {

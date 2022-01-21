@@ -38,11 +38,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   .chat-input-bar {
-    position: sticky;
     display: flex;
-    right: 0;
-    bottom: 0;
-    left: 0;
     flex-direction: row;
     justify-content: center;
     align-items: center;

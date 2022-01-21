@@ -37,7 +37,6 @@ export default defineComponent({
   async mounted() {
     await this.getRoomById(this.chatId);
     this.connectToWebsocket(this.token, this.chatId);
-    this.scrollToBottom();
   },
   computed: {
     currentUserId() {
@@ -53,6 +52,9 @@ export default defineComponent({
       return TokenStorageService.getTokens()?.access as string;
     }
   },
+  updated() {
+    this.scrollToBottom();
+  },
   methods: {
     async getRoomById(chatId: string) {
       this.isLoad = false;
@@ -66,8 +68,6 @@ export default defineComponent({
     },
     handleMessage(event: MessageEvent) {
       this.chat.messages.push(JSON.parse(event.data) as Message);
-      this.scrollToBottom();
-
     },
     connectToWebsocket(token: string, chatId: string) {
       console.log("Starting connection to WebSocket Server")
@@ -82,7 +82,7 @@ export default defineComponent({
     scrollToBottom() {
       const el = (this.$refs.chatBox as HTMLElement)?.lastElementChild;
       if (el) {
-        el?.scrollIntoView({behavior: 'smooth', block: "center"});
+        el?.scrollIntoView({behavior: 'smooth', block: 'center'});
       }
     },
     isGroupedMessages(index: number): boolean {
@@ -98,7 +98,6 @@ export default defineComponent({
       if(to.fullPath.includes(`/${RouterPaths.CHAT}`)) {
         await this.getRoomById(this.chatId);
         this.connectToWebsocket(this.token, this.chatId);
-        this.scrollToBottom();
       }
     }
   },
@@ -109,14 +108,17 @@ export default defineComponent({
 .chat {
   &__wrapper {
     position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    box-sizing: border-box;
+    height: 100vh;
   }
 
   &__message_list {
     display: block;
     box-sizing: border-box;
-    padding: 160px 20px 80px 20px;
-    height: 100vh;
-    max-height: 100vh;
+    padding: 0 20px;
+    height: 100%;
     overflow-y: scroll !important;
     scroll-behavior: smooth;
   }
@@ -125,5 +127,4 @@ export default defineComponent({
     display: none;
   }
 }
-
 </style>
