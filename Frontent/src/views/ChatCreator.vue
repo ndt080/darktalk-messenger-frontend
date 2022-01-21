@@ -121,6 +121,11 @@ export default defineComponent({
     const v$ = useVuelidate(rules, state, { $autoDirty: true });
     return { state, v$, roomTypes, queryResult };
   },
+  computed: {
+    username(): string {
+      return this.$store.getters.user?.username;
+    }
+  },
   methods: {
     async submit() {
       const result = await this.v$.$validate();
@@ -141,7 +146,7 @@ export default defineComponent({
       })
     },
     addUser(user: User) {
-      if(this.state?.users.get(user?.uid as number)) return;
+      if(this.state?.users.get(user?.uid as number) || user.username == this.username) return;
 
       this.state?.users.set(user?.uid as number, user);
     },
