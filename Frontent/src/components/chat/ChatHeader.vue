@@ -34,18 +34,15 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .chat-header {
-  position: absolute;
   display: flex;
-  top: 0;
-  left: 0;
-  right: 0;
   flex-direction: row;
   justify-content: flex-start;
   padding: 20px;
   align-items: center;
   height: 30px;
   background: var(--main-background-color);
-  box-shadow: 0 15px 15px -5px var(--main-background-color);
+  box-shadow: 0 15px 15px 0 var(--main-background-color);
+  z-index: 10;
 
   &__back {
     font-size: 20px;

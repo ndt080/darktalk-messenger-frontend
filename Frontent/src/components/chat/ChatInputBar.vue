@@ -5,7 +5,7 @@
         <Avatar assetImage="chat" width="30"></Avatar>
       </div>
       <div class="chat-input-bar__input">
-        <multiline-text-field placeholder="Your message" v-model:value="inputValue"></multiline-text-field>
+        <base-multiline-input placeholder="Your message" v-model:value="inputValue" @submit="sendMessage"></base-multiline-input>
       </div>
       <button class="chat-input-bar__send_btn" :disabled="!inputValue" @click.prevent="sendMessage">
         <i class="btn-icon app-icons icon-plane"></i>
@@ -16,14 +16,15 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import MultilineTextField from "@/components/custom-text-fields/multiline-text-field.vue";
-import Avatar from "@/components/img-boxes/Avatar.vue";
+import Avatar from "@/components/base/BaseAvatar.vue";
+import BaseMultilineInput from "@/components/base/inputs/BaseMultilineInput.vue";
 
 export default defineComponent({
   name: "ChatInputBar",
-  components: { Avatar, MultilineTextField },
+  components: { BaseMultilineInput, Avatar,  },
   data: () => ({
-    inputValue: ""
+    inputValue: "",
+    isSubmit: false,
   }),
   emits: ['sendMessage'],
   methods: {
@@ -37,11 +38,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
   .chat-input-bar {
-    position: absolute;
     display: flex;
-    right: 30px;
-    bottom: 20px;
-    left: 30px;
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -50,11 +47,10 @@ export default defineComponent({
       display: flex;
       box-sizing: border-box;
       flex-direction: row;
-      flex-wrap: nowrap;
       justify-content: space-between;
       align-items: center;
+      margin: 0 20px 20px 30px;
       width: 100%;
-      min-height: 60px;
       max-height: 240px;
       background: var(--input-background-color);
       border-radius: 20px;
@@ -68,7 +64,6 @@ export default defineComponent({
     &__input {
       box-sizing: border-box;
       padding: 0 30px 0 15px;
-      height: 100%;
       width: 100%;
     }
 

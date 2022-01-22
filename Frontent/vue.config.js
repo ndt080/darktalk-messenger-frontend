@@ -1,8 +1,11 @@
 module.exports = {
   pwa: {
-    name: 'messenger',
-    themeColor: '#161719',
-    prefer_related_applications: true,
+    name: 'FakeTalk',
+    short_name: 'FakeTalk',
+    theme_color: '#161719',
+    background_color: '#161719',
+    display: "standalone",
+    prefer_related_applications: true
   },
   css: {
     loaderOptions: {

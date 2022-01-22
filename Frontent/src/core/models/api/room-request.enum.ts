@@ -3,7 +3,7 @@ import { RoomUserRequest } from "@/core/models/api/room-user-request.model";
 import { Message } from "@/core/models/message.model";
 
 export interface RoomRequest {
-  "id": string;
+  "id": number;
   "title": string;
   "description": string;
   "room_type": RoomType;

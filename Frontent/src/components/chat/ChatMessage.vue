@@ -2,12 +2,12 @@
   <div class="chat-message" :class="styleClass">
     <div class="chat-message__container" :class="{'chat-message--group': isGrouped}">
       <div class="chat-message__avatar">
-        <Avatar assetImage="avatar" width="40" height="40"/>
+        <base-avatar assetImage="avatar" width="40" height="40" />
       </div>
       <div class="chat-message__content">
-        <p class="chat-message__content_sender title-regular-14">{{sender}}</p>
+        <p class="chat-message__content_sender title-regular-14">{{ sender }}</p>
         <div class="chat-message__content_message title-regular-14">
-          {{message.text.trim()}}
+          {{ message.text }}
         </div>
       </div>
     </div>
@@ -17,15 +17,14 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { Message } from "@/core/models/message.model";
-import Avatar from "@/components/img-boxes/Avatar.vue";
 import { RoomUser } from "@/core/models/room-user.model";
+import BaseAvatar from "@/components/base/BaseAvatar.vue";
 
 export default defineComponent({
   name: "ChatMessage",
-  components: { Avatar },
+  components: { BaseAvatar },
   data: () => ({
-    sender: "",
-    isCurrentUserMessage: false,
+    sender: ""
   }),
   props: {
     message: Object as PropType<Message>,
@@ -36,16 +35,20 @@ export default defineComponent({
     }
   },
   created() {
-    const member = this.members?.find(roomUser => roomUser.user.id == this.message?.sender) as RoomUser;
+    const member = this.members?.find(roomUser => roomUser.user.uid == this.message?.sender) as RoomUser;
     const senderFullName = member?.user?.fullname as string;
     const senderUserName = member?.user?.username as string;
     this.sender = senderFullName ? senderFullName : senderUserName;
-
-    this.isCurrentUserMessage = this.$store.getters.user.username === senderUserName;
   },
   computed: {
+    currentUserId() {
+      return this.$store.getters.user?.uid;
+    },
+    currentUserName() {
+      return this.$store.getters.user?.username;
+    },
     styleClass(): string {
-      return this.isCurrentUserMessage ? 'chat-message--my_message': '';
+      return this.currentUserId === this.message?.sender ? "chat-message--my_message" : "";
     }
   }
 });
@@ -86,10 +89,10 @@ export default defineComponent({
       background: var(--message-background-color);
       border-radius: 0 15px 15px 15px;
 
-      overflow-wrap: normal;  /* не поддерживает IE, Firefox; является копией word-wrap */
+      overflow-wrap: normal;
       word-wrap: normal;
-      word-break: normal;  /* не поддерживает Opera12.14, значение keep-all не поддерживается IE, Chrome */
-      line-break: auto;  /* нет поддержки для русского языка */
+      word-break: normal;
+      line-break: auto;
       hyphens: manual;
     }
   }
@@ -130,14 +133,14 @@ export default defineComponent({
   }
 }
 
-@media screen and (max-width: 650px){
+@media screen and (max-width: 650px) {
   .chat-message {
     &__avatar {
       margin-left: 0;
       margin-right: 10px;
     }
-
   }
+
   .chat-message.chat-message--my_message {
     .chat-message__avatar {
       margin-right: 0;

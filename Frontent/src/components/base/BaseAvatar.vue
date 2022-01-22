@@ -13,14 +13,14 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Avatar",
+  name: "BaseAvatar",
   props: {
     link: {
       type: String,
     },
     assetImage: {
       type: String,
-      default: "avatar.png"
+      default: "avatar"
     },
     width: {
       type: String,
