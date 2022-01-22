@@ -13,7 +13,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "Avatar",
+  name: "BaseAvatar",
   props: {
     link: {
       type: String,

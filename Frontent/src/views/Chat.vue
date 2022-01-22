@@ -32,12 +32,8 @@ export default defineComponent({
   data: () => ({
     isLoad: false,
     chat: {} as Room,
-    connection: {} as WebSocket,
+    connection: {} as WebSocket
   }),
-  async mounted() {
-    await this.getRoomById(this.chatId);
-    this.connectToWebsocket(this.token, this.chatId);
-  },
   computed: {
     currentUserId() {
       return this.$store.getters.user?.uid;
@@ -52,6 +48,20 @@ export default defineComponent({
       return TokenStorageService.getTokens()?.access as string;
     }
   },
+  watch: {
+    async $route(to) {
+      this.connection.close();
+
+      if (to.fullPath.includes(`/${RouterPaths.CHAT}`)) {
+        await this.getRoomById(this.chatId);
+        this.connectToWebsocket(this.token, this.chatId);
+      }
+    }
+  },
+  async mounted() {
+    await this.getRoomById(this.chatId);
+    this.connectToWebsocket(this.token, this.chatId);
+  },
   updated() {
     this.scrollToBottom();
   },
@@ -59,19 +69,19 @@ export default defineComponent({
     async getRoomById(chatId: string) {
       this.isLoad = false;
       try {
-        await this.$store.dispatch('getRoomById', chatId);
+        await this.$store.dispatch("getRoomById", chatId);
         this.chat = this.$store.getters.openedRoom;
         this.isLoad = true;
       } catch (e) {
-        NotificationService.error("Error!", e)
+        NotificationService.error("Error!", e);
       }
     },
     handleMessage(event: MessageEvent) {
       this.chat.messages.push(JSON.parse(event.data) as Message);
     },
     connectToWebsocket(token: string, chatId: string) {
-      console.log("Starting connection to WebSocket Server")
-      this.connection = new WebSocket(`${process.env.VUE_APP_ROOT_SOCKET}/chat/${chatId}/?token=${token}`)
+      console.log("Starting connection to WebSocket Server");
+      this.connection = new WebSocket(`${process.env.VUE_APP_ROOT_SOCKET}/chat/${chatId}/?token=${token}`);
 
       this.connection.onmessage = (event) => this.handleMessage(event);
       this.connection.onopen = () => console.log("Successfully connected to the echo websocket server...");
@@ -81,26 +91,14 @@ export default defineComponent({
     },
     scrollToBottom() {
       const el = (this.$refs.chatBox as HTMLElement)?.lastElementChild;
-      if (el) {
-        el?.scrollIntoView({behavior: 'smooth', block: 'center'});
-      }
+      if (el) el?.scrollIntoView({ behavior: "smooth", block: "center" });
     },
     isGroupedMessages(index: number): boolean {
-      if(index < 1) return false;
+      if (index < 1) return false;
 
       return this.chat.messages[index].sender === this.chat.messages[index - 1].sender;
     }
-  },
-  watch:{
-    async $route(to) {
-      this.connection.close();
-
-      if(to.fullPath.includes(`/${RouterPaths.CHAT}`)) {
-        await this.getRoomById(this.chatId);
-        this.connectToWebsocket(this.token, this.chatId);
-      }
-    }
-  },
+  }
 });
 </script>
 

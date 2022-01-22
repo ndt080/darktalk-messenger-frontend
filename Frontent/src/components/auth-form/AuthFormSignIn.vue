@@ -4,34 +4,24 @@
       <h1 class="form__title title-semi-32">Sign in</h1>
     </div>
     <div class="form__group">
-      <div class="form__input_container">
-        <input
-          type="email"
-          placeholder="Email"
-          class="common-input title-regular-14"
-          autocomplete="on"
-          :class="{
-            'input--error' : v$.email.$error,
-            'input--success' : !v$.email.$error && state.email
-          }"
-          v-model="state.email"
-        />
-      </div>
+      <base-input
+        type="email"
+        placeholder="Email"
+        :is-success="!!state.email"
+        :is-error="v$.email.$error && !!state.email"
+        :style="{'min-width': ' 220px'}"
+        v-model:value="state.email"
+      />
     </div>
     <div class="form__group">
-      <div class="form__input_container">
-        <input
-          type="password"
-          placeholder="Password"
-          class="common-input title-regular-14"
-          autocomplete="on"
-          :class="{
-            'input--error' : v$.password.$error,
-            'input--success' : !v$.password.$error && state.password
-          }"
-          v-model="state.password"
-        />
-      </div>
+      <base-input
+        type="password"
+        placeholder="Password"
+        :is-success="!!state.password"
+        :is-error="v$.password.$error && !!state.password"
+        :style="{'min-width': ' 220px'}"
+        v-model:value="state.password"
+      />
     </div>
     <button class="form__btn primary-btn" type="submit" :disabled="v$.$invalid">Sign in</button>
   </form>
@@ -43,9 +33,11 @@ import useVuelidate from "@vuelidate/core";
 import { email, minLength, required } from "@vuelidate/validators";
 import { User } from "@/core/models/user.model";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
+import BaseInput from "@/components/base/inputs/BaseInput.vue";
 
 export default defineComponent({
-  name: "sign-in-form",
+  name: "AuthFormSignIn",
+  components: { BaseInput },
   setup() {
     const state = reactive({
       email: null,
@@ -91,10 +83,6 @@ export default defineComponent({
 
   &__group {
     margin-bottom: 20px
-  }
-
-  &__input_container input {
-    min-width: 200px;
   }
 
   &__btn {

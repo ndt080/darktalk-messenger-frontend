@@ -4,78 +4,59 @@
       <a href="#" @click.prevent="goHome" class="chat-creator__back">
         <i class="fas fa-arrow-left"></i>
       </a>
-      <div class="chat-creator__title title-semi-14">Creating a chat</div>
+      <div class="chat-creator__title title-regular-18">Creating a chat</div>
     </div>
 
     <div class="chat-creator__body">
       <form class="chat-creator__form" @submit.prevent="submit()" novalidate>
-        <div class="chat-creator__form_input">
-          <input
-            name="Title"
-            type="text"
+        <div class="chat-creator__input">
+          <base-input
             placeholder="Title"
-            class="common-input title-regular-14"
-            :class="{
-                'input--error' : v$.title.$error,
-                'input--success' : !v$.title.$error && state.title
-              }"
-            v-model="state.title"
+            :is-success="!!state.title"
+            :is-error="v$.title.$error"
+            v-model:value="state.title"
           />
         </div>
-        <div class="chat-creator__form_input">
-          <input
-            name="description"
-            type="text"
+        <div class="chat-creator__input">
+          <base-input
             placeholder="Description"
-            class="common-input title-regular-14"
-            :class="{
-                'input--error' : v$.description.$error,
-                'input--success' : !v$.description.$error && state.description
-              }"
-            v-model="state.description"
+            :is-success="!!state.description"
+            :is-error="v$.description.$error"
+            v-model:value="state.description"
           />
         </div>
-        <div class="chat-creator__form_input">
-          <select
-            name="description"
-            class="common-input title-regular-14"
-            :class="{
-                'input--error' : v$.roomType.$error,
-                'input--success' : !v$.roomType.$error && state.roomType
-              }"
-            v-model="state.roomType"
-          >
-            <option :value="null" disabled>Chat type</option>
-            <option v-for="(type, index) of roomTypes" :key="index" :value="type">
-              {{ type }}
-            </option>
-          </select>
+        <div class="chat-creator__input">
+          <base-select
+            placeholder="Chat type"
+            :data="selectOptions"
+            :is-success="!!state.roomType"
+            v-model:value="state.roomType"
+          />
         </div>
-        <div class="chat-creator__form_input">
-          <Autocomplete
-            :data="queryResult"
-            @update:value="findUser($event)"
-            @itemSelect="addUser($event)"
-            placeholder="Search users"
+        <div class="chat-creator__input">
+          <base-autocomplete
+            placeholder="Search users..."
+            :query-function="queryFunction"
+            @item-selected="addUser($event)"
           >
-            <template v-slot:default="slotProp">
-              <div class="autocomplete__result title-regular-14">
-                @{{slotProp.item?.username}}
-              </div>
-            </template>
-          </Autocomplete>
+            <template v-slot:result="scope">@{{ scope.item.username }}</template>
+          </base-autocomplete>
         </div>
-        <div class="chat-creator__form_input">
+        <div class="chat-creator__input">
           <template v-for="([ key, value ], index) of state.users" :key="index">
             <div class="user-btn">
-              {{value.username}}
+              {{ value.username }}
               <span class="user-btn_icon" @click.prevent="removeUser(key)">
                 <i class="far fa-trash-alt"></i>
               </span>
             </div>
           </template>
         </div>
-        <button class="chat-creator__btn primary-btn" type="submit" :disabled="v$.$invalid || state.users.size < 1">
+        <button
+          class="chat-creator__btn primary-btn"
+          type="submit"
+          :disabled="isValidForm"
+        >
           Create chat
         </button>
       </form>
@@ -84,29 +65,28 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive } from "vue";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 import { minLength, required } from "@vuelidate/validators";
 import useVuelidate from "@vuelidate/core";
 import { RoomType } from "@/core/consts/room-type.enum";
-import Autocomplete from "@/components/autocomplete/Autocomplete.vue";
 import ApiUserService from "@/services/api/api-user.service";
 import { User } from "@/core/models/user.model";
 import UserMapperUtil from "@/utils/user-mapper.util";
-
+import BaseInput from "@/components/base/inputs/BaseInput.vue";
+import BaseSelect from "@/components/base/inputs/BaseSelect.vue";
+import BaseSelectOption from "@/core/models/inputs/base-select-option.model";
+import BaseAutocomplete from "@/components/base/inputs/BaseAutocomplete.vue";
 
 export default defineComponent({
   name: "ChatCreator",
-  components: { Autocomplete },
+  components: { BaseAutocomplete, BaseSelect, BaseInput },
   setup() {
-    const roomTypes = Object.values(RoomType);
-    const queryResult = ref([] as User[])
-
     const state = reactive({
       title: "",
       description: "",
       roomType: null,
-      users: new Map<number, User>(),
+      users: new Map<number, User>()
     });
 
     const rules = computed(() => {
@@ -114,19 +94,43 @@ export default defineComponent({
         title: { required, minLength: minLength(3) },
         description: { required, minLength: minLength(3) },
         roomType: { required },
-        users: { minLength: minLength(2) },
+        users: { minLength: minLength(2) }
       };
     });
 
     const v$ = useVuelidate(rules, state, { $autoDirty: true });
-    return { state, v$, roomTypes, queryResult };
+    return { state, v$ };
   },
+  data: () => ({
+    selectOptions: [] as BaseSelectOption[]
+  }),
   computed: {
     username(): string {
       return this.$store.getters.user?.username;
+    },
+    isValidForm(): boolean {
+      return this.v$.$invalid || this.state.users.size < 1;
     }
   },
+  created() {
+    const optionsValues = Object.values(RoomType);
+    this.selectOptions = Array.from(optionsValues).map(value => ({
+      title: value,
+      value: value
+    } as BaseSelectOption));
+  },
   methods: {
+    goHome() {
+      this.$router.push(`/${RouterPaths.HOME}`);
+    },
+    async queryFunction(query: string): Promise<User[]> {
+      if(query.length < 3) return [];
+
+      const response = await ApiUserService.findUserByUsername(query);
+      const result: User[] = response?.data.length <= 10 ? response?.data : [];
+
+      return UserMapperUtil.mapToUsers(result);
+    },
     async submit() {
       const result = await this.v$.$validate();
       if (!result) return;
@@ -136,27 +140,17 @@ export default defineComponent({
         description: this.state.description,
         room_type: this.state.roomType,
         users: [...this.state.users.keys()]
-      })
-    },
-    findUser(query: string) {
-      ApiUserService.findUserByUsername(query).then(response => {
-        if(response?.data.length <= 10) {
-          this.queryResult = UserMapperUtil.mapToUsers(response?.data);
-        }
-      })
+      });
     },
     addUser(user: User) {
-      if(this.state?.users.get(user?.uid as number) || user.username == this.username) return;
+      if (this.state.users.get(user?.uid as number) || user.username == this.username) return;
 
-      this.state?.users.set(user?.uid as number, user);
+      this.state.users.set(user?.uid as number, user);
     },
     removeUser(key: number) {
-      this.state?.users.delete(key);
+      this.state.users.delete(key);
     },
-    goHome() {
-      this.$router.push(`/${RouterPaths.HOME}`);
-    }
-  },
+  }
 });
 </script>
 
@@ -205,16 +199,10 @@ export default defineComponent({
     padding: 30px;
   }
 
-  &__form {
-    &_input {
-      margin-bottom: 20px;
-      min-width: 250px;
-      width: 50%;
-    }
-
-    &_input input, &_input select {
-      width: 100%;
-    }
+  &__input {
+    margin-bottom: 20px;
+    min-width: 250px;
+    width: 50%;
   }
 
   .user-btn {
@@ -237,21 +225,12 @@ export default defineComponent({
 
 @media screen and (max-width: 650px) {
   .chat-creator {
-    &__form_input {
-      width: 95%;
+    &__input {
+      width: 100%;
     }
   }
 }
 
-.autocomplete__result {
-  cursor: pointer;
-  padding: 5px 0;
-  color: var(--second-title-color);
-}
-
-.autocomplete__result:hover {
-  color: var(--success-color);
-}
 .chat-creator::-webkit-scrollbar {
   display: none;
 }

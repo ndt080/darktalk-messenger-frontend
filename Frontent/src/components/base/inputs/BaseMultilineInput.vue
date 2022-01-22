@@ -13,19 +13,28 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "multiline-textfield",
-  data: () => ({
-    textarea: {} as HTMLElement,
-  }),
+  name: "BaseMultilineInput",
   props: {
     value: String,
     isSubmittable: Boolean,
     placeholder: String,
   },
   emits: ['update:value', 'submit'],
+  data: () => ({
+    textarea: {} as HTMLElement,
+  }),
+  watch: {
+    value(newValue) {
+      this.textarea.innerText = newValue.replace(/(\*\*|__)(.*?)\1/g, "<strong>$2</strong>");
+      this.setCaretPosition();
+    },
+  },
   mounted() {
     this.textarea = (this.$refs.multiline_text_field as HTMLElement);
     this.textarea.addEventListener('keydown', (e) => this.handlePressingEnter(e));
+  },
+  unmounted() {
+    this.textarea.removeEventListener('keydown', (e) => this.handlePressingEnter(e))
   },
   methods: {
     handlePressingEnter(event: KeyboardEvent) {
@@ -52,15 +61,6 @@ export default defineComponent({
       this.$emit('update:value', this.textarea.innerText);
     },
   },
-  watch: {
-    value(newValue) {
-      this.textarea.innerText = newValue.replace(/(\*\*|__)(.*?)\1/g, "<strong>$2</strong>");
-      this.setCaretPosition();
-    },
-  },
-  unmounted() {
-    this.textarea.removeEventListener('keydown', (e) => this.handlePressingEnter(e))
-  }
 });
 </script>
 

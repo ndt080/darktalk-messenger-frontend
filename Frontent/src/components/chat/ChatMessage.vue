@@ -2,7 +2,7 @@
   <div class="chat-message" :class="styleClass">
     <div class="chat-message__container" :class="{'chat-message--group': isGrouped}">
       <div class="chat-message__avatar">
-        <Avatar assetImage="avatar" width="40" height="40" />
+        <base-avatar assetImage="avatar" width="40" height="40" />
       </div>
       <div class="chat-message__content">
         <p class="chat-message__content_sender title-regular-14">{{ sender }}</p>
@@ -18,11 +18,11 @@
 import { defineComponent, PropType } from "vue";
 import { Message } from "@/core/models/message.model";
 import { RoomUser } from "@/core/models/room-user.model";
-import Avatar from "@/components/img-boxes/Avatar.vue";
+import BaseAvatar from "@/components/base/BaseAvatar.vue";
 
 export default defineComponent({
   name: "ChatMessage",
-  components: { Avatar },
+  components: { BaseAvatar },
   data: () => ({
     sender: ""
   }),

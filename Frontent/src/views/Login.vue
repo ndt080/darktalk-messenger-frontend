@@ -1,14 +1,14 @@
 <template>
   <div class="auth">
     <template v-if="activeIndex === 0">
-      <sign-in-form></sign-in-form>
+      <auth-form-sign-in></auth-form-sign-in>
       <div class="auth__help_text">
         <p>Don't have an account?</p>
         <div class="auth__link" @click="setActiveIndex(1)">Sign up</div>
       </div>
     </template>
     <template v-if="activeIndex === 1">
-      <sign-up-form @toSignIn="setActiveIndex(0)"></sign-up-form>
+      <auth-form-sign-up @toSignIn="setActiveIndex(0)"></auth-form-sign-up>
       <div class="auth__help_text">
         <p>Already have an account?</p>
         <div class="auth__link" @click="setActiveIndex(0)">Sign in</div>
@@ -21,12 +21,13 @@
 </template>
 
 <script lang="ts">
-import SignInForm from "@/components/authorization-forms/sign-in-form.vue";
-import SignUpForm from "@/components/authorization-forms/sign-up-form.vue";
+import AuthFormSignIn from "@/components/auth-form/AuthFormSignIn.vue";
+import AuthFormSignUp from "@/components/auth-form/AuthFormSignUp.vue";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "Login",
+  components: { AuthFormSignIn, AuthFormSignUp },
   data() {
     return {
       activeIndex: 0,
@@ -37,7 +38,6 @@ export default defineComponent({
       this.activeIndex = index;
     }
   },
-  components: { SignUpForm, SignInForm }
 });
 </script>
 

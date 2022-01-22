@@ -5,7 +5,7 @@
         <Avatar assetImage="chat" width="30"></Avatar>
       </div>
       <div class="chat-input-bar__input">
-        <multiline-textfield placeholder="Your message" v-model:value="inputValue" @submit="sendMessage"></multiline-textfield>
+        <base-multiline-input placeholder="Your message" v-model:value="inputValue" @submit="sendMessage"></base-multiline-input>
       </div>
       <button class="chat-input-bar__send_btn" :disabled="!inputValue" @click.prevent="sendMessage">
         <i class="btn-icon app-icons icon-plane"></i>
@@ -16,12 +16,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Avatar from "@/components/img-boxes/Avatar.vue";
-import MultilineTextfield from "@/components/custom-text-fields/multiline-textfield.vue";
+import Avatar from "@/components/base/BaseAvatar.vue";
+import BaseMultilineInput from "@/components/base/inputs/BaseMultilineInput.vue";
 
 export default defineComponent({
   name: "ChatInputBar",
-  components: { MultilineTextfield, Avatar,  },
+  components: { BaseMultilineInput, Avatar,  },
   data: () => ({
     inputValue: "",
     isSubmit: false,
