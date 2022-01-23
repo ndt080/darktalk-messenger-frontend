@@ -12,7 +12,7 @@
     </div>
     <ChatInputBar @sendMessage="sendMessage($event)"></ChatInputBar>
   </div>
-  <div v-else></div>
+  <base-loader v-else></base-loader>
 </template>
 
 <script lang="ts">
@@ -25,10 +25,11 @@ import NotificationService from "@/services/notification.service";
 import { Room } from "@/core/models/room.model";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 import { Message } from "@/core/models/message.model";
+import BaseLoader from "@/components/base/BaseLoader.vue";
 
 export default defineComponent({
   name: "Chat",
-  components: { ChatMessage, ChatHeader, ChatInputBar },
+  components: { BaseLoader, ChatMessage, ChatHeader, ChatInputBar },
   data: () => ({
     isLoad: false,
     chat: {} as Room,

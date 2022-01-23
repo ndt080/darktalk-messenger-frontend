@@ -2,12 +2,12 @@
   <div class="base-select" :class="styleClass">
     <select
       class="base-select__select"
-      :style="style"
+      :style="props.style"
       v-model="inputValue"
     >
-      <option class="base-select__option" :value="null" disabled>{{ placeholder }}</option>
+      <option class="base-select__option" value="" disabled>{{ props.placeholder }}</option>
 
-      <template v-for="option of data" :key="option.title">
+      <template v-for="option of props.data" :key="option.title">
         <option class="base-select__option" :value="option.value">
           {{ option.title }}
         </option>
@@ -18,47 +18,45 @@
     <i class="base-select__icon icon-success fas fa-check"></i>
     <i class="base-select__icon icon-error fas fa-exclamation"></i>
   </div>
-  <div class="base-select__error title-regular-12" v-if="isError && errorMessage">{{ errorMessage }}</div>
+  <div class="base-select__error title-regular-12" v-if="props.isError && props.errorMessage">{{ props.errorMessage }}</div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script lang="ts" setup>
+import { withDefaults, defineProps, defineEmits, ref, watch, computed } from "vue";
 import BaseSelectOption from "@/core/models/inputs/base-select-option.model";
 
-export default defineComponent({
-  name: "BaseSelect",
-  props: {
-    placeholder: { type: String, default: "Select value..." },
-    style: Object,
-    value: String,
-    data: { type: Object as PropType<BaseSelectOption[]>, required: true },
-    isSuccess: { type: Boolean, default: false },
-    isError: { type: Boolean, default: false },
-    errorMessage: { type: String, default: "" }
-  },
-  emits: ["update:value"],
-  data: () => ({
-    inputValue: ""
-  }),
-  computed: {
-    styleClass() {
-      return {
-        "base-select--error": this.isError,
-        "base-select--success": this.isSuccess && !this.isError
-      };
-    }
-  },
-  watch: {
-    value: {
-      immediate: true,
-      handler(current: string) {
-        this.inputValue = current;
-      }
-    },
-    inputValue(value: string) {
-      this.$emit("update:value", value);
-    }
-  }
+interface BaseSelectProps {
+  placeholder?: string,
+  style?: { [key: string]: string | number },
+  value?: string,
+  data: BaseSelectOption[],
+  isSuccess?: boolean,
+  isError?: boolean,
+  errorMessage?: string,
+}
+
+const props = withDefaults(defineProps<BaseSelectProps>(), {
+  placeholder: "Select value...",
+  isSuccess: false,
+  isError: false,
+  errorMessage: ""
+});
+
+const emits = defineEmits(['update:value'])
+
+const inputValue = ref('');
+const value = computed((): string => props.value || "");
+const styleClass = computed(() => ({
+  "base-select--error": props.isError,
+  "base-select--success": props.isSuccess && !props.isError
+}));
+
+watch(value, (currentValue: string) => {
+  inputValue.value = currentValue;
+});
+
+watch(inputValue, (currentValue: string) => {
+  emits("update:value", currentValue);
 });
 </script>
 

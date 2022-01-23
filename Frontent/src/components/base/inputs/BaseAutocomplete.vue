@@ -1,7 +1,7 @@
 <template>
   <div class="base-autocomplete">
     <div class="base-autocomplete__input">
-      <base-input type="search" :placeholder="placeholder" v-model:value="searchQuery" />
+      <base-input type="search" :placeholder="props.placeholder" v-model:value="searchQuery" />
     </div>
     <ul class="base-autocomplete__result" :class="{'base-autocomplete__result--active': isShowResult}">
       <li
@@ -16,48 +16,41 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
+<script lang="ts" setup>
+import { withDefaults, defineProps, defineEmits, ref, watch, computed } from "vue";
 import BaseInput from "@/components/base/inputs/BaseInput.vue";
 import BaseAutocompleteQueryFunction from "@/core/models/inputs/base-autocomplete-query-function.model";
 
-export default defineComponent({
-  name: "BaseAutocomplete",
-  components: { BaseInput },
-  props: {
-    query: String,
-    queryFunction: { type: Function as PropType<BaseAutocompleteQueryFunction>, required: true },
-    placeholder: { type: String, default: "Search..." }
-  },
-  emits: ["update:query", "update:result", "item-selected"],
-  data: () => ({
-    searchQuery: "",
-    result: [],
-    isShowResult: false
-  }),
-  watch: {
-    query: {
-      immediate: true,
-      handler(current: string) {
-        this.searchQuery = current;
-      }
-    },
-    async searchQuery(value: string) {
-      this.$emit("update:query", value);
+interface BaseAutocompleteProps {
+  query?: string,
+  queryFunction: BaseAutocompleteQueryFunction,
+  placeholder?: string,
+}
 
-      this.result = await (this.queryFunction as BaseAutocompleteQueryFunction)(value);
-      this.$emit("update:result", this.result);
-      this.isShowResult = this.result.length > 0;
-    }
-  },
-  methods: {
-    onItemSelected(item: any) {
-      this.$emit("item-selected", item);
-      this.searchQuery = "";
-      this.isShowResult = false;
-    }
-  }
+const props = withDefaults(defineProps<BaseAutocompleteProps>(), {
+  placeholder: 'Search...'
 });
+const emits = defineEmits(["update:query", "update:result", "item-selected"]);
+
+const searchQuery = ref("");
+const result = ref([]);
+const isShowResult = ref(false);
+const query = computed((): string => props.query || "");
+
+watch(query, (currentValue: string) => (searchQuery.value = currentValue));
+watch(searchQuery, async (currentValue: string) => {
+  emits("update:query", currentValue);
+
+  result.value = await props.queryFunction(currentValue);
+  isShowResult.value = result.value.length > 0;
+  emits("update:result", result.value);
+});
+
+const onItemSelected = (item: any) => {
+  emits("item-selected", item);
+  searchQuery.value = "";
+  isShowResult.value = false;
+}
 </script>
 
 <style lang="scss" scoped></style>

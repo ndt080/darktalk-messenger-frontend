@@ -1,6 +1,6 @@
 <template>
-  <div class="layout" v-if="isLoad">
-    <div class="layout__wrapper desktop">
+  <div class="layout">
+    <div class="layout__wrapper desktop" v-if="isLoad">
       <div class="layout__side_container">
         <AppSidebar></AppSidebar>
       </div>
@@ -9,21 +9,22 @@
       </div>
     </div>
 
-    <div class="layout__wrapper mobile">
+    <div class="layout__wrapper mobile" v-if="isLoad">
       <div class="layout__content">
         <router-view />
       </div>
     </div>
+    <base-loader v-else></base-loader>
   </div>
-  <div v-else></div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import AppSidebar from "@/components/AppSidebar.vue";
+import BaseLoader from "@/components/base/BaseLoader.vue";
 
 export default defineComponent({
-  components: { AppSidebar },
+  components: { BaseLoader, AppSidebar },
   data: () => ({
     isLoad: false
   }),
