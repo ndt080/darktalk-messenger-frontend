@@ -1,6 +1,6 @@
 <template>
-  <div class="layout">
-    <div class="layout__wrapper desktop" v-if="isLoad">
+  <div class="layout" v-if="isLoad">
+    <div class="layout__wrapper desktop">
       <div class="layout__side_container">
         <AppSidebar></AppSidebar>
       </div>
@@ -9,12 +9,14 @@
       </div>
     </div>
 
-    <div class="layout__wrapper mobile" v-if="isLoad">
+    <div class="layout__wrapper mobile">
       <div class="layout__content">
         <router-view />
       </div>
     </div>
-    <base-loader v-else></base-loader>
+  </div>
+  <div class="layout__loader" v-else>
+    <base-loader></base-loader>
   </div>
 </template>
 
@@ -38,11 +40,15 @@ export default defineComponent({
     }
   }
 });
-
 </script>
 
 <style lang="scss" scoped>
 .layout {
+  &__loader {
+    width: 100vw;
+    height: 100vh;
+  }
+
   &__wrapper.mobile {
     display: none;
     grid-template-columns: 1fr;

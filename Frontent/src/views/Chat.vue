@@ -1,7 +1,7 @@
 <template>
   <div class="chat__wrapper" v-if="isLoad">
     <ChatHeader :chat="chat"></ChatHeader>
-    <div class="chat__message_list" ref="chatBox">
+    <div class="chat__message_list" ref="chatBox" v-if="!!chat.messages.length">
       <ChatMessage
         v-for="(message, index) of chat.messages" :key="index"
         :message="message"
@@ -10,6 +10,12 @@
       >
       </ChatMessage>
     </div>
+    <template v-else>
+      <div class="chat__message_list chat--empty">
+        <i class="fas fa-inbox"></i>
+        <span class="title-semi-26">There is no message</span>
+      </div>
+    </template>
     <ChatInputBar @sendMessage="sendMessage($event)"></ChatInputBar>
   </div>
   <base-loader v-else></base-loader>
@@ -38,9 +44,6 @@ export default defineComponent({
   computed: {
     currentUserId() {
       return this.$store.getters.user?.uid;
-    },
-    currentUserName() {
-      return this.$store.getters.user?.username;
     },
     chatId() {
       return this.$route.params.id.toString();
@@ -120,6 +123,15 @@ export default defineComponent({
     height: 100%;
     overflow-y: scroll !important;
     scroll-behavior: smooth;
+  }
+
+  &__message_list.chat--empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 64px;
+    color: var(--second-background-color);
   }
 
   &__message_list::-webkit-scrollbar {

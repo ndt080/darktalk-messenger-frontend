@@ -1,0 +1,1 @@
+export type BaseAvatarVariant = "circle" | "square" | "rounded-square";

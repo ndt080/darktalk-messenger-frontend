@@ -2,10 +2,18 @@
   <div class="chat-message" :class="styleClass">
     <div class="chat-message__container" :class="{'chat-message--group': isGrouped}">
       <div class="chat-message__avatar">
-        <base-avatar assetImage="avatar" width="40" height="40" />
+        <base-avatar
+          type="alias"
+          :text="sender"
+          width="40px"
+          height="40px"
+        />
       </div>
       <div class="chat-message__content">
-        <p class="chat-message__content_sender title-regular-14">{{ sender }}</p>
+        <p class="chat-message__content_sender title-regular-14">
+          {{ sender }}
+          <span class="chat-message__content_time title-regular-12">{{ createdAt }}</span>
+        </p>
         <div class="chat-message__content_message title-regular-14">
           {{ message.text }}
         </div>
@@ -19,6 +27,7 @@ import { defineComponent, PropType } from "vue";
 import { Message } from "@/core/models/message.model";
 import { RoomUser } from "@/core/models/room-user.model";
 import BaseAvatar from "@/components/base/BaseAvatar.vue";
+import moment from "moment/";
 
 export default defineComponent({
   name: "ChatMessage",
@@ -41,11 +50,11 @@ export default defineComponent({
     this.sender = senderFullName ? senderFullName : senderUserName;
   },
   computed: {
+    createdAt() {
+      return moment(this.message?.updated_at).format('hh:mm, MMM Do YY');
+    },
     currentUserId() {
       return this.$store.getters.user?.uid;
-    },
-    currentUserName() {
-      return this.$store.getters.user?.username;
     },
     styleClass(): string {
       return this.currentUserId === this.message?.sender ? "chat-message--my_message" : "";
@@ -94,6 +103,10 @@ export default defineComponent({
       word-break: normal;
       line-break: auto;
       hyphens: manual;
+    }
+
+    &_time {
+      color: var(--second-title-color);
     }
   }
 }

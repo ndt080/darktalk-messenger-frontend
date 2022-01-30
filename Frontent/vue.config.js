@@ -4,8 +4,13 @@ module.exports = {
     short_name: 'FakeTalk',
     theme_color: '#161719',
     background_color: '#161719',
-    display: "standalone",
-    prefer_related_applications: true
+    display: 'standalone',
+    prefer_related_applications: true,
+    themeColor: '#161719',
+    msTileColor: '#161719',
+    manifestOptions: {
+      background_color: '#161719'
+    }
   },
   css: {
     loaderOptions: {

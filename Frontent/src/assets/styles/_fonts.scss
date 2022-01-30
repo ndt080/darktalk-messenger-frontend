@@ -50,6 +50,16 @@ $font-family: 'Montserrat', sans-serif;
     font-size: 28px;
   }
 
+  &-semi-12 {
+    @include montserrat-semi;
+    font-size: 12px;
+  }
+
+  &-semi-18 {
+    @include montserrat-semi;
+    font-size: 18px;
+  }
+
   &-semi-26 {
     @include montserrat-semi;
     font-size: 26px;
@@ -59,11 +69,6 @@ $font-family: 'Montserrat', sans-serif;
     @include montserrat-semi;
     font-size: 32px;
     line-height: 48px;
-  }
-
-  &-semi-18 {
-    @include montserrat-semi;
-    font-size: 18px;
   }
 }
 

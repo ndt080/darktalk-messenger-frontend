@@ -2,7 +2,13 @@
   <router-link :to="getChatLink" class="chat-card__wrapper">
     <div class="chat-card">
       <div class="chat-card__img">
-        <img src="@/assets/img/chat.png" alt="chat" />
+        <base-avatar
+          class="chat-card__img"
+          type="alias"
+          :text="card.title"
+          width="50px"
+          height="50px"
+        />
       </div>
       <div class="chat-card__content">
         <p class="chat-card__content_title">{{ card.title }}</p>
@@ -26,9 +32,11 @@ import { Message } from "@/core/models/message.model";
 import moment from "moment/";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 import { RoomUser } from "@/core/models/room-user.model";
+import BaseAvatar from "@/components/base/BaseAvatar.vue";
 
 export default defineComponent({
   name: "ChatsListCard",
+  components: { BaseAvatar },
   data: () => ({
     lastMessage: {} as Message,
     lastMessageSender: ""
@@ -70,12 +78,6 @@ export default defineComponent({
 
   &__wrapper {
     text-decoration: none;
-  }
-
-  &__img img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
   }
 
   &__content {

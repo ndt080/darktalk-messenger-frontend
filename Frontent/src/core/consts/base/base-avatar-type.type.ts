@@ -1,0 +1,1 @@
+export type BaseAvatarType = "alias" | "text" | "image";

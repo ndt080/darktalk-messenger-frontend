@@ -2,10 +2,18 @@
   <div class="chat-input-bar">
     <div class="chat-input-bar__container">
       <div class="chat-input-bar__avatar">
-        <Avatar assetImage="chat" width="30"></Avatar>
+        <base-avatar
+          type="alias"
+          :text="currentUser.fullname || currentUser.username"
+        />
       </div>
       <div class="chat-input-bar__input">
-        <base-multiline-input placeholder="Your message" v-model:value="inputValue" @submit="sendMessage"></base-multiline-input>
+        <base-multiline-input
+          placeholder="Your message"
+          v-model:value="inputValue"
+          @submit="sendMessage"
+        >
+        </base-multiline-input>
       </div>
       <button class="chat-input-bar__send_btn" :disabled="!inputValue" @click.prevent="sendMessage">
         <i class="btn-icon app-icons icon-plane"></i>
@@ -16,16 +24,22 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Avatar from "@/components/base/BaseAvatar.vue";
+import BaseAvatar from "@/components/base/BaseAvatar.vue";
 import BaseMultilineInput from "@/components/base/inputs/BaseMultilineInput.vue";
+import { User } from "@/core/models/user.model";
 
 export default defineComponent({
   name: "ChatInputBar",
-  components: { BaseMultilineInput, Avatar,  },
+  components: { BaseMultilineInput, BaseAvatar,  },
   data: () => ({
     inputValue: "",
     isSubmit: false,
   }),
+  computed: {
+    currentUser(): User {
+      return this.$store.getters.user;
+    }
+  },
   emits: ['sendMessage'],
   methods: {
     sendMessage() {

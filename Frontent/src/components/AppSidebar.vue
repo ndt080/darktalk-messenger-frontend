@@ -2,11 +2,14 @@
   <div class="sidebar">
     <div class="sidebar__header">
       <div class="sidebar__avatar" @click.prevent="isOpenMenu = !isOpenMenu">
-        <img
+        <base-avatar
           class="sidebar__avatar_img"
           :class="{'active': isOpenMenu}"
-          src="@/assets/img/avatar.png"
-          alt="avatar"
+          type="alias"
+          variant="rounded-square"
+          :text="currentUser.fullname || currentUser.username"
+          width="40px"
+          height="40px"
         />
       </div>
       <div class="sidebar__select_msg_type">
@@ -41,16 +44,23 @@
 import { defineComponent } from "vue";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 import ChatsList from "@/components/chats-list/ChatsList.vue";
+import BaseAvatar from "@/components/base/BaseAvatar.vue";
+import { User } from "@/core/models/user.model";
 
 export default defineComponent({
   name: "AppSidebar",
-  components: { ChatsList },
+  components: { BaseAvatar, ChatsList },
   data: () => ({
     isOpenMenu: false
   }),
+  computed: {
+    currentUser(): User {
+      return this.$store.getters.user;
+    }
+  },
   methods: {
     login() {
-      this.$store.dispatch('logout').then(() => this.$router.push(`/${RouterPaths.LOGIN}`))
+      this.$store.dispatch("logout").then(() => this.$router.push(`/${RouterPaths.LOGIN}`));
     }
   }
 });
@@ -74,6 +84,7 @@ export default defineComponent({
   }
 
   &__avatar_img {
+    overflow: hidden;
     border-radius: 20px;
     border: 6px solid rgba(gray, 0.2);
     width: 40px;
@@ -86,6 +97,7 @@ export default defineComponent({
 
   &__avatar {
     position: relative;
+    cursor: pointer;
   }
 
   &__avatar:before {
