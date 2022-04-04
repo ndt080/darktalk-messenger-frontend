@@ -140,7 +140,7 @@ export default defineComponent({
         description: this.state.description,
         room_type: this.state.roomType,
         users: [...this.state.users.keys()]
-      });
+      }).then(() => this.goHome())
     },
     addUser(user: User) {
       if (this.state.users.get(user?.uid as number) || user.username == this.username) return;

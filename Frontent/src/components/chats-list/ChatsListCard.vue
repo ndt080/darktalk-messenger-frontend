@@ -2,7 +2,13 @@
   <router-link :to="getChatLink" class="chat-card__wrapper">
     <div class="chat-card">
       <div class="chat-card__img">
-        <img src="@/assets/img/chat.png" alt="chat" />
+        <base-avatar
+          class="chat-card__img"
+          type="alias"
+          :text="card.title"
+          width="50px"
+          height="50px"
+        />
       </div>
       <div class="chat-card__content">
         <p class="chat-card__content_title">{{ card.title }}</p>
@@ -26,31 +32,42 @@ import { Message } from "@/core/models/message.model";
 import moment from "moment/";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 import { RoomUser } from "@/core/models/room-user.model";
+import BaseAvatar from "@/components/base/BaseAvatar.vue";
 
 export default defineComponent({
   name: "ChatsListCard",
+  components: { BaseAvatar },
   data: () => ({
-    lastMessage: {} as Message,
     lastMessageSender: ""
   }),
   props: {
     card: Object as PropType<Room>
   },
-  mounted() {
-    const messages = this.card?.messages as Message[];
-    this.lastMessage = this.card?.messages[messages?.length - 1] as Message;
-
-    const members = this.card?.users as RoomUser[];
-    const msgSender = members.find(roomUser => roomUser.user.uid == this.lastMessage?.sender);
-    this.lastMessageSender = msgSender?.user?.username as string;
-  },
   computed: {
+    lastMessage() {
+      return this.card?.messages[this.card?.messages?.length - 1] as Message;
+    },
     getTag() {
       const lassMessageTime = this.lastMessage?.created_at as Date;
       return lassMessageTime ? moment(lassMessageTime).format("h:mm") : null;
     },
     getChatLink(): string {
       return `/${RouterPaths.CHAT}/${this.card?.id}`;
+    }
+  },
+  mounted() {
+    this.lastMessageSender = this.getSender(this.card!);
+  },
+  watch: {
+    card(value) {
+      this.lastMessageSender = this.getSender(value);
+    }
+  },
+  methods: {
+    getSender(card: Room): string {
+      const members = card?.users as RoomUser[];
+      const msgSender = members.find(roomUser => roomUser.user.uid == this.lastMessage?.sender);
+      return msgSender?.user?.username as string;
     }
   }
 });
@@ -70,12 +87,6 @@ export default defineComponent({
 
   &__wrapper {
     text-decoration: none;
-  }
-
-  &__img img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
   }
 
   &__content {

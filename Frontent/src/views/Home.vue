@@ -24,6 +24,7 @@ export default defineComponent({
 
 .home-page.mobile {
   display: none;
+  width: 100%;
 }
 
 @media screen and (max-width: 650px) {
@@ -33,7 +34,6 @@ export default defineComponent({
 
   .home-page.mobile {
     display: block;
-    width: 100%;
   }
 }
 </style>

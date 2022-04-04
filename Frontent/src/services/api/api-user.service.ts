@@ -11,7 +11,7 @@ class ApiUserService {
   }
 
   async findUserById(id: string) {
-    return await api.get<UserRequest[]>(`/user/?id=${id}`);
+    return await api.get<UserRequest>(`/user/${id}`);
   }
 
   async findUserByEmail(email: string) {

@@ -6,4 +6,5 @@ export interface UserRequest {
   full_name?: string;
   date_of_birth?: Date;
   date_joined?: Date;
+  rooms?: [],
 }

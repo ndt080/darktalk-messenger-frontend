@@ -1,167 +1,110 @@
 <template>
-  <div class="sidebar">
-    <div class="sidebar__header">
-      <div class="sidebar__avatar" @click.prevent="isOpenMenu = !isOpenMenu">
-        <img
-          class="sidebar__avatar_img"
-          :class="{'active': isOpenMenu}"
-          src="@/assets/img/avatar.png"
-          alt="avatar"
+  <div class="app-sidebar">
+    <div class="app-sidebar__header-wrapper">
+      <app-header></app-header>
+
+      <div class="app-sidebar__user-chats-header">
+        <div class="app-sidebar__title title-semi-26">Messages</div>
+        <div class="app-sidebar__toolbar">
+          <router-link :to="createChatUrl" class="app-sidebar__toolbar_item">
+            <i class="app-sidebar__toolbar_icon fas fa-edit"></i>
+          </router-link>
+        </div>
+      </div>
+
+      <div class="app-sidebar__search">
+        <BaseAutocomplete
+          placeholder="Search..."
+          class="common-input title-regular-14"
+          :query-function="queryFunction"
         />
       </div>
-      <div class="sidebar__select_msg_type">
-        <i class="fas fa-comments primary left-icon"></i>
-        <span class="title-regular-18">All</span>
-        <i class="fas fa-chevron-down right-icon"></i>
-      </div>
     </div>
-    <ul class="sidebar__menu" :class="{'active': isOpenMenu}">
-      <li class="sidebar__menu_item">
-        <a href="#" class="sidebar__menu_link">
-          <i class="sidebar__menu_icon fas fa-user"></i>
-          Profile
-        </a>
-      </li>
-      <li class="sidebar__menu_divider"></li>
-      <li class="sidebar__menu_item">
-        <a href="#" class="sidebar__menu_link" @click.prevent="login">
-          <i class="sidebar__menu_icon fas fa-sign-out-alt"></i>
-          Sign out
-        </a>
-      </li>
-    </ul>
-
-    <div class="sidebar__chats_list">
-      <ChatsList></ChatsList>
-    </div>
+    <ChatsList :items="chatListItems"></ChatsList>
+    <div class="app-sidebar__panel"></div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import { RouterPaths } from "@/core/consts/router-paths.enum";
+<script lang="ts" setup>
 import ChatsList from "@/components/chats-list/ChatsList.vue";
+import AppHeader from "@/components/AppHeader.vue";
+import { RouterPaths } from "@/core/consts/router-paths.enum";
+import { computed, ref, watch } from "vue";
+import { useStore } from "@/store";
+import BaseAutocomplete from "@/components/base/inputs/BaseAutocomplete.vue";
+import { Room } from "@/core/models/room.model";
 
-export default defineComponent({
-  name: "AppSidebar",
-  components: { ChatsList },
-  data: () => ({
-    isOpenMenu: false
-  }),
-  methods: {
-    login() {
-      this.$store.dispatch('logout').then(() => this.$router.push(`/${RouterPaths.LOGIN}`))
-    }
-  }
+const store = useStore();
+
+const chats = computed(() => store.getters.rooms);
+const createChatUrl = computed((): string => `/${RouterPaths.CREATE_CHAT}`);
+const chatListItems = ref<Room[]>(chats.value);
+
+
+watch(chats, (value: Room[]) => {
+  chatListItems.value = value;
 });
+
+const queryFunction = (query: string): Room[] => {
+  if(query.length < 2) {
+    chatListItems.value = chats.value;
+    return [];
+  }
+
+  chatListItems.value = chats.value.filter((chat: Room) => {
+    return chat.title.toLowerCase().includes(query.toLowerCase());
+  });
+  return [];
+}
 </script>
 
 <style lang="scss" scoped>
-.sidebar {
-  display: block;
-  box-sizing: border-box;
-  width: 100%;
+.app-sidebar {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   height: 100vh;
-  overflow-y: scroll;
-  scroll-behavior: smooth;
-  padding: 20px 30px;
+  max-height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
 
-  &__header {
+  &__user-chats-header {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box;
+    margin-top: 32px;
   }
 
-  &__avatar_img {
-    border-radius: 20px;
-    border: 6px solid rgba(gray, 0.2);
-    width: 40px;
-    height: 40px;
+  &__title {
+    color: var(--second-title-color);
   }
 
-  &__avatar_img.active {
-    border-color: rgba($primary-color, 0.5);
-  }
-
-  &__avatar {
-    position: relative;
-  }
-
-  &__avatar:before {
-    content: '';
-    position: absolute;
-    top: 35%;
-    left: 0;
-    z-index: 2;
-    height: 12px;
-    width: 0;
-    border-right: 3px solid var(--primary-color);
-  }
-
-  &__select_msg_type {
+  &__toolbar {
     display: flex;
-    flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
-    width: 100px;
-    color: var(--main-title-color);
-
-    .left-icon {
-      font-size: 24px;
-    }
-
-    .right-icon {
-      font-size: 14px;
-      color: gray;
-    }
-  }
-
-  &__menu {
-    list-style: none;
-    visibility: hidden;
-    opacity: 0;
-    height: 0;
-    color: var(--main-title-color);
-    transition: 0.3s all;
+    box-sizing: border-box;
 
     &_icon {
-      padding-right: 10px;
-    }
-
-    &_divider {
-      margin: 15px 0;
-      border-bottom: 2px solid var(--divider-color);
-    }
-
-    &_link {
+      font-size: 20px;
       color: var(--second-title-color);
-      text-decoration: none;
-    }
-
-    &_link:hover {
       transition: 0.2s all;
-      color: var(--main-title-color);
+      cursor: pointer;
+    }
+
+    &_icon:hover {
+      color: var(--success-color);
+      transition: 0.2s all;
     }
   }
 
-  &__menu.active {
-    visibility: visible;
-    opacity: 1;
-    border-radius: 15px;
-    margin-top: 10px;
-    padding: 20px;
-    background-color: var(--popup-background-color);
-    height: auto;
-    transition: 0.5s all;
-  }
+  &__search {
+    margin: 20px 0;
+    box-sizing: border-box;
 
-  &__chats_list {
-    margin-top: 20px;
+    input {
+      width: 100%;
+    }
   }
-}
-
-.sidebar::-webkit-scrollbar {
-  display: none;
 }
 </style>

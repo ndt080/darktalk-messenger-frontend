@@ -10,6 +10,14 @@ class ApiRoomsService {
     return await api.get<RoomRequest>(`/room/${id}/`);
   }
 
+  async leaveRoom(id: string) {
+    return await api.delete(`/room/${id}/leave/`);
+  }
+
+  async removeRoom(id: string) {
+    return await api.delete(`/room/${id}/`);
+  }
+
   async createRoom(data: any) {
     return await api.post<RoomRequest>(`/room/`, data);
   }
