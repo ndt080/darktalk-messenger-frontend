@@ -5,7 +5,7 @@
         <i class="fas fa-arrow-left"></i>
       </a>
       <div class="chat-header__menu">
-        <a href="#" class="chat-header__menu_btn">
+        <a href="#" class="chat-header__menu_btn" @click.prevent="onMenuClick">
           <i class="app-icons icon-grid"></i>
         </a>
       </div>
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps } from "vue";
+import { defineEmits, defineProps } from "vue";
 import { useRouter } from "vue-router";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 import { Room } from "@/core/models/room.model";
@@ -40,6 +40,11 @@ interface ChatHeaderProps {
 
 const router = useRouter();
 const props = defineProps<ChatHeaderProps>();
+const emits = defineEmits(['visibleSidebar']);
+
+const onMenuClick = (event: Event) => {
+  emits("visibleSidebar", event)
+};
 
 const goHome = () => router.push(`/${RouterPaths.HOME}`);
 </script>

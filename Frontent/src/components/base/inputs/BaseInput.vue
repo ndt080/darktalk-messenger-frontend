@@ -6,6 +6,7 @@
       :type="props.type"
       :placeholder="props.placeholder"
       :autocomplete="props.autocomplete"
+      :disabled="props.disabled"
       v-model="inputValue"
     />
     <i class="base-input__icon icon-success fas fa-check"></i>
@@ -28,6 +29,7 @@ interface BaseInputProps {
   isSuccess?: boolean,
   isError?: boolean,
   errorMessage?: string,
+  disabled?: boolean,
 }
 
 const props = withDefaults(defineProps<BaseInputProps>(), {
@@ -36,12 +38,13 @@ const props = withDefaults(defineProps<BaseInputProps>(), {
   placeholder: "Enter value...",
   isSuccess: false,
   isError: false,
-  errorMessage: ""
+  errorMessage: "",
+  disabled: false,
 });
 
 const emits = defineEmits(['update:value'])
 
-const inputValue = ref('');
+const inputValue = ref(props.value || "");
 const value = computed((): string => props.value || "");
 const styleClass = computed(() => ({
   "base-input--error": props.isError,

@@ -38,27 +38,36 @@ export default defineComponent({
   name: "ChatsListCard",
   components: { BaseAvatar },
   data: () => ({
-    lastMessage: {} as Message,
     lastMessageSender: ""
   }),
   props: {
     card: Object as PropType<Room>
   },
-  mounted() {
-    const messages = this.card?.messages as Message[];
-    this.lastMessage = this.card?.messages[messages?.length - 1] as Message;
-
-    const members = this.card?.users as RoomUser[];
-    const msgSender = members.find(roomUser => roomUser.user.uid == this.lastMessage?.sender);
-    this.lastMessageSender = msgSender?.user?.username as string;
-  },
   computed: {
+    lastMessage() {
+      return this.card?.messages[this.card?.messages?.length - 1] as Message;
+    },
     getTag() {
       const lassMessageTime = this.lastMessage?.created_at as Date;
       return lassMessageTime ? moment(lassMessageTime).format("h:mm") : null;
     },
     getChatLink(): string {
       return `/${RouterPaths.CHAT}/${this.card?.id}`;
+    }
+  },
+  mounted() {
+    this.lastMessageSender = this.getSender(this.card!);
+  },
+  watch: {
+    card(value) {
+      this.lastMessageSender = this.getSender(value);
+    }
+  },
+  methods: {
+    getSender(card: Room): string {
+      const members = card?.users as RoomUser[];
+      const msgSender = members.find(roomUser => roomUser.user.uid == this.lastMessage?.sender);
+      return msgSender?.user?.username as string;
     }
   }
 });

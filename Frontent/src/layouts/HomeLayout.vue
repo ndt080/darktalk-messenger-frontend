@@ -1,7 +1,7 @@
 <template>
   <div class="layout" v-if="isLoad">
     <div class="layout__wrapper desktop">
-      <div class="layout__side_container">
+      <div class="layout__content layout--side">
         <AppSidebar></AppSidebar>
       </div>
       <div class="layout__content">
@@ -20,67 +20,58 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { onMounted, ref } from "vue";
 import AppSidebar from "@/components/AppSidebar.vue";
 import BaseLoader from "@/components/base/BaseLoader.vue";
+import { useStore } from "@/store";
 
-export default defineComponent({
-  components: { BaseLoader, AppSidebar },
-  data: () => ({
-    isLoad: false
-  }),
-  async mounted() {
-    this.isLoad = false;
-    try {
-      await this.$store.dispatch('getRooms');
-      this.isLoad = true;
-    } catch (error) {
-      console.log(error)
-    }
+
+const isLoad = ref<boolean>(false);
+const store = useStore();
+
+onMounted(async () => {
+  isLoad.value = false;
+  try {
+    await store.dispatch('getRooms');
+    isLoad.value = true;
+  } catch (error) {
+    console.log(error)
   }
 });
 </script>
 
 <style lang="scss" scoped>
 .layout {
+  height: 100%;
+
   &__loader {
     width: 100vw;
-    height: 100vh;
+    height: 100%;
   }
 
   &__wrapper.mobile {
     display: none;
     grid-template-columns: 1fr;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
   }
 
   &__wrapper.desktop {
     position: relative;
     display: grid;
     grid-template-columns: auto 1fr;
-    width: 100vw;
-    height: 100vh;
-  }
-
-  &__side_container {
-    display: block;
-    width: 350px;
+    width: 100%;
     height: 100%;
-    border-right: 1px solid var(--divider-color);
   }
 
   &__content {
     width: 100%;
+    height: 100%;
   }
-}
 
-@media screen and (max-width: 900px) {
-  .layout {
-    &__side_container {
-      width: 300px;
-    }
+  &__content.layout--side {
+    border-right: 1px solid var(--divider-color);
   }
 }
 

@@ -44,7 +44,6 @@ const AuthStoreModule: StoreOptions<State> = {
         NotificationService.error("Error!", error.message);
       }
     },
-
     logout({ commit }) {
       try {
         UserStorageService.removeUser();

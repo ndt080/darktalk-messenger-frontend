@@ -55,6 +55,11 @@ $font-family: 'Montserrat', sans-serif;
     font-size: 12px;
   }
 
+  &-semi-14 {
+    @include montserrat-semi;
+    font-size: 14px;
+  }
+
   &-semi-18 {
     @include montserrat-semi;
     font-size: 18px;

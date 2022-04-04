@@ -7,14 +7,16 @@
           :text="currentUser.fullname || currentUser.username"
         />
       </div>
-      <div class="chat-input-bar__input">
-        <base-multiline-input
+
+      <div class="chat-input-bar__input title-regular-14">
+        <BaseMultilineInput
           placeholder="Your message"
           v-model:value="inputValue"
-          @submit="sendMessage"
-        >
-        </base-multiline-input>
+          :with-emoji="true"
+          @input-submit="sendMessage"
+        />
       </div>
+
       <button class="chat-input-bar__send_btn" :disabled="!inputValue" @click.prevent="sendMessage">
         <i class="btn-icon app-icons icon-plane"></i>
       </button>
@@ -22,32 +24,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed, defineEmits, ref } from "vue";
 import BaseAvatar from "@/components/base/BaseAvatar.vue";
 import BaseMultilineInput from "@/components/base/inputs/BaseMultilineInput.vue";
-import { User } from "@/core/models/user.model";
+import { useStore } from "@/store";
 
-export default defineComponent({
-  name: "ChatInputBar",
-  components: { BaseMultilineInput, BaseAvatar,  },
-  data: () => ({
-    inputValue: "",
-    isSubmit: false,
-  }),
-  computed: {
-    currentUser(): User {
-      return this.$store.getters.user;
-    }
-  },
-  emits: ['sendMessage'],
-  methods: {
-    sendMessage() {
-      this.$emit('sendMessage', this.inputValue);
-      this.inputValue = "";
-    }
-  }
-});
+
+const store = useStore();
+const emits = defineEmits(['sendMessage']);
+
+const inputValue = ref<string>();
+const currentUser = computed(() => store.getters.user);
+
+function sendMessage() {
+  emits('sendMessage', inputValue.value);
+  inputValue.value = "";
+}
 </script>
 
 <style lang="scss" scoped>
@@ -77,7 +70,7 @@ export default defineComponent({
 
     &__input {
       box-sizing: border-box;
-      padding: 0 30px 0 15px;
+      padding: 0 8px 0 16px;
       width: 100%;
     }
 

@@ -1,141 +1,114 @@
 <template>
-  <div class="chat__wrapper" v-if="isLoad">
-    <ChatHeader :chat="chat"></ChatHeader>
-    <div class="chat__message_list" ref="chatBox" v-if="!!chat.messages.length">
-      <ChatMessage
-        v-for="(message, index) of chat.messages" :key="index"
-        :message="message"
+  <div class="chat">
+    <div class="chat__wrapper" v-if="isLoad">
+      <ChatHeader :chat="chat" @visibleSidebar="onVisibleSidebar"></ChatHeader>
+
+      <ChatMessageList
+        :messages="chat.messages"
         :members="chat.users"
-        :isGrouped="isGroupedMessages(index)"
-      >
-      </ChatMessage>
+      />
+
+      <ChatInputBar @sendMessage="sendMessage($event)" />
     </div>
-    <template v-else>
-      <div class="chat__message_list chat--empty">
-        <i class="fas fa-inbox"></i>
-        <span class="title-semi-26">There is no message</span>
-      </div>
+    <BaseLoader v-else></BaseLoader>
+    <template v-if="isShowSidebar">
+      <ChatSidebar :chat="chat" @close="onVisibleSidebar"/>
     </template>
-    <ChatInputBar @sendMessage="sendMessage($event)"></ChatInputBar>
   </div>
-  <base-loader v-else></base-loader>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, ref, watch } from "vue";
 import TokenStorageService from "@/services/storage/token-storage.service";
 import ChatInputBar from "@/components/chat/ChatInputBar.vue";
 import ChatHeader from "@/components/chat/ChatHeader.vue";
-import ChatMessage from "@/components/chat/ChatMessage.vue";
 import NotificationService from "@/services/notification.service";
 import { Room } from "@/core/models/room.model";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 import { Message } from "@/core/models/message.model";
 import BaseLoader from "@/components/base/BaseLoader.vue";
+import { useStore } from "@/store";
+import { useRoute } from "vue-router";
+import ChatSidebar from "@/components/chat/ChatSidebar.vue";
+import ChatMessageList from "@/components/chat/ChatMessageList.vue";
 
-export default defineComponent({
-  name: "Chat",
-  components: { BaseLoader, ChatMessage, ChatHeader, ChatInputBar },
-  data: () => ({
-    isLoad: false,
-    chat: {} as Room,
-    connection: {} as WebSocket
-  }),
-  computed: {
-    currentUserId() {
-      return this.$store.getters.user?.uid;
-    },
-    chatId() {
-      return this.$route.params.id.toString();
-    },
-    token(): string {
-      return TokenStorageService.getTokens()?.access as string;
-    }
-  },
-  watch: {
-    async $route(to) {
-      this.connection.close();
 
-      if (to.fullPath.includes(`/${RouterPaths.CHAT}`)) {
-        await this.getRoomById(this.chatId);
-        this.connectToWebsocket(this.token, this.chatId);
-      }
-    }
-  },
-  async mounted() {
-    await this.getRoomById(this.chatId);
-    this.connectToWebsocket(this.token, this.chatId);
-  },
-  updated() {
-    this.scrollToBottom();
-  },
-  methods: {
-    async getRoomById(chatId: string) {
-      this.isLoad = false;
-      try {
-        await this.$store.dispatch("getRoomById", chatId);
-        this.chat = this.$store.getters.openedRoom;
-        this.isLoad = true;
-      } catch (e) {
-        NotificationService.error("Error!", e);
-      }
-    },
-    handleMessage(event: MessageEvent) {
-      this.chat.messages.push(JSON.parse(event.data) as Message);
-    },
-    connectToWebsocket(token: string, chatId: string) {
-      console.log("Starting connection to WebSocket Server");
-      this.connection = new WebSocket(`${process.env.VUE_APP_ROOT_SOCKET}/chat/${chatId}/?token=${token}`);
+const store = useStore();
+const route = useRoute();
 
-      this.connection.onmessage = (event) => this.handleMessage(event);
-      this.connection.onopen = () => console.log("Successfully connected to the echo websocket server...");
-    },
-    sendMessage(message: string) {
-      this.connection.send(JSON.stringify({ message: message }));
-    },
-    scrollToBottom() {
-      const el = (this.$refs.chatBox as HTMLElement)?.lastElementChild;
-      if (el) el?.scrollIntoView({ behavior: "smooth", block: "center" });
-    },
-    isGroupedMessages(index: number): boolean {
-      if (index < 1) return false;
+const isLoad = ref<boolean>(false);
+const isShowSidebar = ref<boolean>(false);
+const chat = ref<Room>({} as Room);
+const connection = ref<WebSocket>();
 
-      return this.chat.messages[index].sender === this.chat.messages[index - 1].sender;
-    }
+const chatId = computed(():string => route.params.id?.toString());
+const token = computed(():string => TokenStorageService.getTokens()?.access || '');
+
+onMounted(async () => {
+  await getRoomById(chatId.value);
+  connectToWebsocket(token.value, chatId.value);
+});
+
+const onVisibleSidebar = () => {
+  isShowSidebar.value = !isShowSidebar.value;
+}
+
+
+const getRoomById = async (chatId: string) => {
+  isLoad.value = false;
+  try {
+    await store.dispatch("getRoomById", chatId);
+    chat.value = store.getters.openedRoom;
+    isLoad.value = true;
+  } catch (e) {
+    NotificationService.error("Error!", e);
+  }
+}
+
+const handleMessage = (event: MessageEvent) =>  {
+  const message: Message = JSON.parse(event.data);
+  chat.value.messages.push(message);
+  store.dispatch('addMessageToRoom', { message: message, roomId: Number(chatId.value)})
+}
+
+const connectToWebsocket = (token: string, chatId: string) => {
+  console.log("Starting connection to WebSocket Server");
+  connection.value = new WebSocket(`${process.env.VUE_APP_ROOT_SOCKET}/chat/${chatId}/?token=${token}`);
+
+  connection.value.onmessage = handleMessage;
+  connection.value.onopen = () => console.log("Successfully connected to the echo websocket server...");
+}
+
+const sendMessage = (message: string) => {
+  connection.value?.send(JSON.stringify({ message: message }));
+}
+
+watch(route, async (to) => {
+  connection.value?.close();
+
+  if (to.fullPath.includes(`/${RouterPaths.CHAT}`) &&
+    !to.fullPath.includes(`/${RouterPaths.CHAT}/create`)
+  ) {
+    await getRoomById(chatId.value);
+    connectToWebsocket(token.value, chatId.value);
   }
 });
 </script>
 
 <style lang="scss" scoped>
 .chat {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  box-sizing: border-box;
+  height: 100vh;
+
   &__wrapper {
     position: relative;
     display: grid;
     grid-template-rows: auto 1fr auto;
     box-sizing: border-box;
     height: 100vh;
-  }
-
-  &__message_list {
-    display: block;
-    box-sizing: border-box;
-    padding: 0 20px;
-    height: 100%;
-    overflow-y: scroll !important;
-    scroll-behavior: smooth;
-  }
-
-  &__message_list.chat--empty {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 64px;
-    color: var(--second-background-color);
-  }
-
-  &__message_list::-webkit-scrollbar {
-    display: none;
   }
 }
 </style>

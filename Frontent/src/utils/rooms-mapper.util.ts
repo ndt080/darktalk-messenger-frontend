@@ -19,12 +19,12 @@ class RoomsMapperUtil {
   mapToRoomsRequest = (rooms: Room[]): RoomRequest[] => rooms.map(room => this.mapToRoomRequest(room));
 
   mapToRoom = (room: RoomRequest): Room => ({
-    id: room.id,
-    title: room.title,
-    description: room.description,
-    roomType: room.room_type,
-    users: this.mapToRoomUser(room.users),
-    messages: room.messages,
+    id: room?.id,
+    title: room?.title,
+    description: room?.description,
+    roomType: room?.room_type,
+    users: room.users ? this.mapToRoomUser(room.users) : [],
+    messages: room?.messages,
   });
 
   mapToRoomRequest = (room: Room): RoomRequest => ({

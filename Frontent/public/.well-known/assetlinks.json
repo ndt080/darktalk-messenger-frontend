@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "app.web.hotfire_chat.twa",
+                     "sha256_cert_fingerprints": ["E8:0B:28:06:9B:69:10:98:16:0E:15:F8:E9:D5:77:A1:13:FB:59:DF:14:68:F6:14:D5:F3:BB:37:5F:7B:A4:F6"] }
+      }
+]

@@ -25,7 +25,7 @@
 import { withDefaults, defineProps, ref, computed, onMounted } from "vue";
 import { BaseAvatarType, BaseAvatarVariant } from "@/core/consts/base";
 
-interface BaseAvatarProps {
+const props = withDefaults(defineProps<{
   type?: BaseAvatarType,
   variant?: BaseAvatarVariant,
   url?: string,
@@ -33,15 +33,13 @@ interface BaseAvatarProps {
   assetImage?: string,
   width?: string,
   height?: string,
-}
-
-const props = withDefaults(defineProps<BaseAvatarProps>(), {
+}>(), {
   type: "alias",
   variant: "circle",
   text: "Current user",
   assetImage: "avatar",
-  width: "30px",
-  height: "30px"
+  width: "32px",
+  height: "32px"
 });
 
 const avatarTextBlock = ref<HTMLElement>();
@@ -55,7 +53,7 @@ const componentStyle = computed(() => ({
 onMounted(() => {
   const textBlock =  avatarTextBlock.value as HTMLElement;
   const width = textBlock?.offsetWidth as number;
-  if(width > 30) textBlock.style.fontSize = `${width * 0.4}px`;
+  if(width > 32) textBlock.style.fontSize = `${width * 0.4}px`;
 });
 
 function getStyleClass(text: string): string {
@@ -83,9 +81,14 @@ function getImage(imageName: string) {
 
 <style lang="scss" scoped>
 .avatar {
-  min-height: 30px;
-  min-width: 30px;
+  min-height: 32px;
+  min-width: 32px;
   line-height: 0;
+
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
 
   img {
     font-size: 0;
