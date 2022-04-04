@@ -1,9 +1,0 @@
-build:
-  docker:
-    web: app/Dockerfile
-release:
-  command:
-    - ./release.sh
-  image: web
-run:
-  web: daphne messenger_project.asgi:application -b 0.0.0.0 -p $PORT
