@@ -14,3 +14,12 @@ html, body {
   -ms-user-select: none;
   user-select: none;
 }
+
+.hr-80 {
+  display: block;
+  height: 3px;
+  width: 80%;
+  background-color: var(--divider-color);
+  border-radius: $second-border-radius;
+  margin: 8px 0;
+}

@@ -25,6 +25,12 @@
     </div>
     <button class="form__btn primary-btn" type="submit" :disabled="v$.$invalid">Sign in</button>
   </form>
+
+  <div class="hr-80"></div>
+
+  <div class="google-login" @click.prevent="signInWithGoogle()">
+    <img class="google-login__img" src="@/assets/img/icons/google.svg"  alt="google" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -35,20 +41,20 @@ import { User } from "@/core/models/user.model";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
 import BaseInput from "@/components/base/inputs/BaseInput.vue";
 
+interface Credentials {
+  email?: string;
+  password?: string;
+}
+
 export default defineComponent({
   name: "AuthFormSignIn",
   components: { BaseInput },
   setup() {
-    const state = reactive({
-      email: null,
-      password: null
-    });
-
+    const state = reactive({} as Credentials);
     const rules = {
       email: { required, email },
       password: { required, minLength: minLength(6) }
     };
-
     const v$ = useVuelidate(rules, state, { $autoDirty: true });
     return { state, v$ };
   },
@@ -56,18 +62,19 @@ export default defineComponent({
     async submit() {
       const result = await this.v$.$validate();
       if (!result) return;
-
       await this.$store.dispatch("login", this.getUser(this.state))
         .then(() => this.$router.push(`/${RouterPaths.HOME}`));
     },
-
-    getUser(state: any): User {
+    getUser(state: Credentials): User {
       return {
         email: state.email,
         password: state.password
       };
+    },
+    signInWithGoogle() {
+      this.$gapi.login();
     }
-  }
+  },
 });
 </script>
 
@@ -75,6 +82,7 @@ export default defineComponent({
 .form {
   display: flex;
   flex-direction: column;
+  margin-bottom: 12px;
 
   &__title {
     text-align: center;
@@ -89,5 +97,30 @@ export default defineComponent({
     align-self: center;
     text-transform: uppercase;
   }
+}
+
+.google-login {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color: var(--second-background-color);
+  cursor: pointer;
+  transition: all 0.5s;
+
+  &__img {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.google-login:hover {
+  ackground-color: var(--popup-background-color);
+  transform: scale(1.25);
+  transition: all 0.5s;
 }
 </style>
