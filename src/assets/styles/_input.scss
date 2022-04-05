@@ -3,11 +3,17 @@ input.common-input, select.common-input {
   padding: 10px;
   border: none;
   border-radius: $second-border-radius;
+  -webkit-border-radius: $second-border-radius;
+  -moz-outline-radius: $second-border-radius;
   color: var(--second-title-color);
+  transform: translateZ(0);
 }
 
 input.common-input:focus, select.common-input:focus {
   outline: 2px solid var(--message-background-color);
+  border-radius: $second-border-radius;
+  -webkit-border-radius: $second-border-radius;
+  -moz-outline-radius: $second-border-radius;
 }
 
 input.common-input.input--error, select.common-input.input--error {
