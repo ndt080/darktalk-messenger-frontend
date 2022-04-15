@@ -72,6 +72,7 @@ onMounted(async () => {
 
   &__content.layout--side {
     border-right: 1px solid var(--divider-color);
+    width: 350px;
   }
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <form class="form" @submit.prevent="submit()" novalidate>
+  <form class="form" @submit.prevent="submit" novalidate>
     <div class="form__group">
       <h1 class="form__title title-semi-32">Sign in</h1>
     </div>
@@ -25,49 +25,49 @@
     </div>
     <button class="form__btn primary-btn" type="submit" :disabled="v$.$invalid">Sign in</button>
   </form>
+
+  <div class="hr-80"></div>
+
+  <AuthFormGoogle />
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive } from "vue";
+<script lang="ts" setup>
+import { reactive } from "vue";
 import useVuelidate from "@vuelidate/core";
 import { email, minLength, required } from "@vuelidate/validators";
 import { User } from "@/core/models/user.model";
 import { RouterPaths } from "@/core/consts/router-paths.enum";
+import { useStore } from "@/store";
+import { useRouter } from "vue-router";
 import BaseInput from "@/components/base/inputs/BaseInput.vue";
+import AuthFormGoogle from "@/components/auth-form/AuthFormGoogle.vue";
 
-export default defineComponent({
-  name: "AuthFormSignIn",
-  components: { BaseInput },
-  setup() {
-    const state = reactive({
-      email: null,
-      password: null
-    });
 
-    const rules = {
-      email: { required, email },
-      password: { required, minLength: minLength(6) }
-    };
+interface Credentials {
+  email?: string;
+  password?: string;
+}
 
-    const v$ = useVuelidate(rules, state, { $autoDirty: true });
-    return { state, v$ };
-  },
-  methods: {
-    async submit() {
-      const result = await this.v$.$validate();
-      if (!result) return;
+const store = useStore();
+const router = useRouter();
 
-      await this.$store.dispatch("login", this.getUser(this.state))
-        .then(() => this.$router.push(`/${RouterPaths.HOME}`));
-    },
+const state = reactive({} as Credentials);
+const v$ = useVuelidate({
+  email: { required, email },
+  password: { required, minLength: minLength(6) }
+}, state, { $autoDirty: true });
 
-    getUser(state: any): User {
-      return {
-        email: state.email,
-        password: state.password
-      };
-    }
-  }
+
+const submit = async () => {
+  if (!await v$.value.$validate()) return;
+
+  await store.dispatch("login", getUser(state))
+    .then(() => router.push(`/${RouterPaths.HOME}`));
+}
+
+const getUser = (state: Credentials): User => ({
+  email: state.email,
+  password: state.password
 });
 </script>
 
@@ -75,6 +75,7 @@ export default defineComponent({
 .form {
   display: flex;
   flex-direction: column;
+  margin-bottom: 12px;
 
   &__title {
     text-align: center;

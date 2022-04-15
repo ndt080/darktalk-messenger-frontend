@@ -15,8 +15,10 @@
       "webpack-env"
     ],
     "paths": {
+      "~core": ["src/core/*"],
       "~models": ["src/core/models/*"],
       "~consts": ["src/core/consts/*"],
+      "~types": ["src/core/types/*"],
       "~middlewares": ["src/middlewares/*"],
       "~services": ["src/services/*"],
       "~router": ["src/router/*"],
@@ -37,6 +39,7 @@
     "tests/**/*.ts",
     "tests/**/*.tsx"
   ],
+  "files": ["./references.d.ts"],
   "exclude": [
     "node_modules"
   ]

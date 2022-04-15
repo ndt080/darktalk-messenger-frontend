@@ -58,7 +58,7 @@ export default defineComponent({
     &__help_text {
       text-align: center;
       color: var(--second-title-color);
-      margin-top: 20px;
+      margin-top: 8px;
     }
 
     &__link {
