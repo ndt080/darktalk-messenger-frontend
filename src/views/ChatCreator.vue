@@ -77,6 +77,7 @@ import BaseInput from "@/components/base/inputs/BaseInput.vue";
 import BaseSelect from "@/components/base/inputs/BaseSelect.vue";
 import BaseSelectOption from "@/core/models/inputs/base-select-option.model";
 import BaseAutocomplete from "@/components/base/inputs/BaseAutocomplete.vue";
+import NotificationService from "@/services/notification.service";
 
 export default defineComponent({
   name: "ChatCreator",
@@ -140,7 +141,10 @@ export default defineComponent({
         description: this.state.description,
         room_type: this.state.roomType,
         users: [...this.state.users.keys()]
-      }).then(() => this.goHome())
+      }).then(() => {
+        NotificationService.success("Success create chat!");
+        this.goHome();
+      });
     },
     addUser(user: User) {
       if (this.state.users.get(user?.uid as number) || user.username == this.username) return;

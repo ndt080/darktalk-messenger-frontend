@@ -1,15 +1,14 @@
 <template>
   <div class="layout" v-if="isLoad">
-    <div class="layout__wrapper desktop">
-      <div class="layout__content layout--side">
-        <AppSidebar></AppSidebar>
-      </div>
-      <div class="layout__content">
-        <router-view />
-      </div>
-    </div>
-
-    <div class="layout__wrapper mobile">
+    <div class="layout__wrapper" :class="{
+      'desktop': isDesktop,
+      'mobile': isMobile
+    }">
+      <template v-if="isDesktop">
+        <div class="layout__content layout--side">
+          <AppSideBar></AppSideBar>
+        </div>
+      </template>
       <div class="layout__content">
         <router-view />
       </div>
@@ -21,24 +20,56 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import AppSidebar from "@/components/AppSidebar.vue";
-import BaseLoader from "@/components/base/BaseLoader.vue";
+import { computed, defineAsyncComponent, onMounted, onUnmounted, provide, ref } from "vue";
 import { useStore } from "@/store";
+import BaseLoader from "@/components/base/BaseLoader.vue";
 
+
+const store = useStore();
 
 const isLoad = ref<boolean>(false);
-const store = useStore();
+const connection = ref<WebSocket>();
+const platform = ref<"desktop" | "mobile">(getPlatform(window.innerWidth));
+
+const isDesktop = computed<boolean>(() => (platform.value === "desktop"));
+const isMobile = computed<boolean>(() => (platform.value === "mobile"));
+
+const AppSideBar = defineAsyncComponent(() => {
+  return import("@/components/AppSidebar.vue");
+});
+
+provide('platform', platform);
 
 onMounted(async () => {
   isLoad.value = false;
   try {
-    await store.dispatch('getRooms');
+    await store.dispatch("getChats");
+    await store.dispatch("connectAppSocket").then((instance: WebSocket) => {
+      connection.value = instance;
+    });
     isLoad.value = true;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
+
+  if (connection.value) {
+    connection.value.onmessage = (event: MessageEvent) => {
+      store.dispatch("handleAppSocketMessage", event);
+    };
+  }
+
+  window.onresize = (event: UIEvent) => {
+    platform.value = getPlatform((event.target as any).innerWidth);
+  };
 });
+
+onUnmounted(() => {
+  store.dispatch("disconnectAppSocket");
+});
+
+function getPlatform(width: number) {
+  return width >= 650 ? "desktop" : "mobile";
+}
 </script>
 
 <style lang="scss" scoped>
@@ -50,11 +81,17 @@ onMounted(async () => {
     height: 100%;
   }
 
-  &__wrapper.mobile {
-    display: none;
-    grid-template-columns: 1fr;
-    width: 100%;
-    height: 100%;
+  &__wrapper {
+    &.mobile {
+      display: none;
+      grid-template-columns: 1fr;
+      width: 100%;
+      height: 100%;
+
+      .layout--side {
+        display: none;
+      }
+    }
   }
 
   &__wrapper.desktop {

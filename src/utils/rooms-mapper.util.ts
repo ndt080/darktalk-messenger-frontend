@@ -4,37 +4,42 @@ import { RoomUser } from "@/core/models/room-user.model";
 import { RoomUserRequest } from "@/core/models/api/room-user-request.model";
 import UserMapperUtil from "@/utils/user-mapper.util";
 
-class RoomsMapperUtil {
-  private mapToRoomUser = (roomUsers: RoomUserRequest[]): RoomUser[] => roomUsers.map(roomUser => ({
-    user: UserMapperUtil.mapToUser(roomUser.user),
-    role: roomUser.role
+class ChatsMapperUtil {
+  private mapToChatMember = (chatMembers: RoomUserRequest[]): RoomUser[] => chatMembers.map(chatMember => ({
+    user: UserMapperUtil.mapToUser(chatMember.user),
+    role: chatMember.role
   }));
 
-  private mapToRoomUserRequest = (roomUsers: RoomUser[]): RoomUserRequest[] => roomUsers.map(roomUser => ({
-    user: UserMapperUtil.mapToUserRequest(roomUser.user),
-    role: roomUser.role
+  private mapToChatMemberRequest = (chatMembers: RoomUser[]): RoomUserRequest[] => chatMembers.map(chatMember => ({
+    user: UserMapperUtil.mapToUserRequest(chatMember.user),
+    role: chatMember.role
   }));
 
-  mapToRooms = (rooms: RoomRequest[]): Room[] => rooms.map(room => this.mapToRoom(room));
-  mapToRoomsRequest = (rooms: Room[]): RoomRequest[] => rooms.map(room => this.mapToRoomRequest(room));
+  mapToChats = (chats: RoomRequest[]): Room[] => {
+    return chats.map(chat => this.mapToChat(chat));
+  };
 
-  mapToRoom = (room: RoomRequest): Room => ({
-    id: room?.id,
-    title: room?.title,
-    description: room?.description,
-    roomType: room?.room_type,
-    users: room.users ? this.mapToRoomUser(room.users) : [],
-    messages: room?.messages,
+  mapToChatsRequest = (chats: Room[]): RoomRequest[] => {
+    return chats.map(chat => this.mapToChatRequest(chat));
+  };
+
+  mapToChat = (chat: RoomRequest): Room => ({
+    id: chat?.id,
+    title: chat?.title,
+    description: chat?.description,
+    roomType: chat?.room_type,
+    users: chat.users ? this.mapToChatMember(chat.users) : [],
+    messages: chat?.messages,
   });
 
-  mapToRoomRequest = (room: Room): RoomRequest => ({
-    id: room.id,
-    title: room.title,
-    description: room.description,
-    room_type: room.roomType,
-    users: this.mapToRoomUserRequest(room.users),
-    messages: room.messages
+  mapToChatRequest = (chat: Room): RoomRequest => ({
+    id: chat.id,
+    title: chat.title,
+    description: chat.description,
+    room_type: chat.roomType,
+    users: this.mapToChatMemberRequest(chat.users),
+    messages: chat.messages
   });
 }
 
-export default new RoomsMapperUtil();
+export default new ChatsMapperUtil();

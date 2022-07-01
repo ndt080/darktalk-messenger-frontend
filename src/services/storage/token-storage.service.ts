@@ -6,9 +6,9 @@ class TokenStorageService {
     localStorage.setItem(StorageKeys.TOKENS, JSON.stringify(tokens));
   }
 
-  static getTokens(): Tokens | null {
+  static getTokens(): Tokens | undefined {
     const dataString = localStorage.getItem(StorageKeys.TOKENS);
-    return dataString ? JSON.parse(dataString) : null;
+    return dataString ? JSON.parse(dataString) : undefined;
   }
 
   static removeTokens(): void {

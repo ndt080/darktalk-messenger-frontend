@@ -1,5 +1,4 @@
 import { StoreOptions } from "vuex";
-import { State } from "@/store/models/state.model";
 import { User } from "@/core/models/user.model";
 import ApiAuthService from "@/services/api/api-auth.service";
 import UserMapperUtil from "@/utils/user-mapper.util";
@@ -8,9 +7,11 @@ import { UserStorageService } from "@/services/storage/user-storage.service";
 import TokenStorageService from "@/services/storage/token-storage.service";
 import { Tokens } from "@/core/models/tokens.model";
 import ApiUserService from "@/services/api/api-user.service";
+import { AuthState } from "@/store/models/auth-state.model";
 
-const AuthStoreModule: StoreOptions<State> = {
-  state: <State>{
+
+const AuthStoreModule: StoreOptions<AuthState> = {
+  state: <AuthState>{
     user: UserStorageService.getUser()
   },
   mutations: {
@@ -92,7 +93,7 @@ const AuthStoreModule: StoreOptions<State> = {
     }
   },
   getters: {
-    user: state => state.user
+    user: state => state.user as User,
   }
 };
 

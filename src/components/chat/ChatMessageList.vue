@@ -9,7 +9,7 @@
     </template>
   </div>
 
-  <div class="chat__message_list chat--empty" v-else>
+  <div class="chat__message_list chat--empty custom-scroll" v-else>
     <i class="fas fa-inbox"></i>
     <span class="title-semi-26">There is no message</span>
   </div>
@@ -24,7 +24,6 @@ import { RoomUser } from "@/core/models/room-user.model";
 
 const chatBox = ref();
 const props = defineProps<{ messages: Message[], members: RoomUser[] }>();
-
 
 onMounted(() => scrollToBottom());
 onUpdated(() => scrollToBottom());

@@ -1,13 +1,19 @@
-import { createStore, useStore as baseUseStore, Store } from "vuex";
+import { createStore, Store, useStore as baseUseStore } from "vuex";
 import { State } from "./models/state.model";
 import { InjectionKey } from "vue";
-import AuthStoreModule from "@/store/modules/auth-store.module";
-import RoomsStoreModule from "@/store/modules/rooms-store.module";
 
-export const key: InjectionKey<Store<State>> = Symbol()
+import AuthStoreModule from "@/store/modules/auth-store.module";
+import ChatsStoreModule from "@/store/modules/chats-store.module";
+import AppSocketStoreModule from "@/store/modules/app-socket-store.module";
+
 
 export const store = createStore<State>({
-  modules: { AuthStoreModule, RoomsStoreModule }
+  modules: {
+    AuthStoreModule,
+    ChatsStoreModule,
+    AppSocketStoreModule,
+  }
 });
 
-export const useStore = ():Store<State> => baseUseStore(key);
+export const key: InjectionKey<Store<State>> = Symbol();
+export const useStore = (): Store<State> => baseUseStore(key);

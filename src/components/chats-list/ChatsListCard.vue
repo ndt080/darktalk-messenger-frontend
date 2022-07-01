@@ -1,6 +1,6 @@
 <template>
   <router-link :to="getChatLink" class="chat-card__wrapper">
-    <div class="chat-card">
+    <div class="chat-card" :class="{'active': !!active}">
       <div class="chat-card__img">
         <base-avatar
           class="chat-card__img"
@@ -34,6 +34,7 @@ import { RouterPaths } from "@/core/consts/router-paths.enum";
 import { RoomUser } from "@/core/models/room-user.model";
 import BaseAvatar from "@/components/base/BaseAvatar.vue";
 
+
 export default defineComponent({
   name: "ChatsListCard",
   components: { BaseAvatar },
@@ -41,7 +42,11 @@ export default defineComponent({
     lastMessageSender: ""
   }),
   props: {
-    card: Object as PropType<Room>
+    card: Object as PropType<Room>,
+    active: {
+      type: Boolean as PropType<boolean>,
+      required: false,
+    }
   },
   computed: {
     lastMessage() {
@@ -49,22 +54,24 @@ export default defineComponent({
     },
     getTag() {
       const lassMessageTime = this.lastMessage?.created_at as Date;
-      return lassMessageTime ? moment(lassMessageTime).format("h:mm") : null;
+      return lassMessageTime ? moment(lassMessageTime).format("h:mm") : '';
     },
     getChatLink(): string {
       return `/${RouterPaths.CHAT}/${this.card?.id}`;
     }
   },
   mounted() {
-    this.lastMessageSender = this.getSender(this.card!);
+    this.lastMessageSender = this.getSender(this.card);
   },
   watch: {
-    card(value) {
-      this.lastMessageSender = this.getSender(value);
+    lastMessage() {
+      this.lastMessageSender = this.getSender(this.card);
     }
   },
   methods: {
-    getSender(card: Room): string {
+    getSender(card: Room | undefined): string {
+      if (!card) return '';
+
       const members = card?.users as RoomUser[];
       const msgSender = members.find(roomUser => roomUser.user.uid == this.lastMessage?.sender);
       return msgSender?.user?.username as string;
@@ -130,6 +137,11 @@ export default defineComponent({
 
 .chat-card:hover {
   background-color: var(--card-background-color);
+  transition: 0.5s all;
+}
+
+.chat-card.active {
+  background-color: var(--message-background-color);
   transition: 0.5s all;
 }
 </style>

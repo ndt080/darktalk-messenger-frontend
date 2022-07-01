@@ -1,19 +1,18 @@
 <template>
   <div class="home-page mobile">
-    <AppSidebar></AppSidebar>
+    <template v-if="platform === 'mobile'">
+      <AppSidebar></AppSidebar>
+    </template>
   </div>
   <div class="home-page desktop">
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { inject } from "vue";
 import AppSidebar from "@/components/AppSidebar.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  name: "Home",
-  components: { AppSidebar },
-});
+const platform = inject('platform');
 </script>
 
 <style lang="scss" scoped>

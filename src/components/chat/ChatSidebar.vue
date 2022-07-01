@@ -11,7 +11,7 @@
     </div>
 
     <div class="chat-sidebar__body">
-      <ChatSidebarMembers :members="chat.users" :isOwnerUser="isOwnerUser"/>
+      <ChatSidebarMembers :members="chat.users" :isOwnerUser="isOwnerUser" />
       <ChatSidebarInvite />
 
     </div>
@@ -35,6 +35,7 @@ import { Room } from "@/core/models/room.model";
 import { RoomRole } from "@/core/consts/room-role.enum";
 import ChatSidebarMembers from "@/components/chat/ChatSidebarMembers.vue";
 import ChatSidebarInvite from "@/components/chat/ChatSidebarInvite.vue";
+import NotificationService from "@/services/notification.service";
 
 const store = useStore();
 const router = useRouter();
@@ -53,13 +54,21 @@ onMounted(() => {
 
 const onCloseSidebar = (event: Event) => emits("close", event);
 const onLeaveChat = () => {
-  if(isOwnerUser.value) {
-    store.dispatch("removeRoom", props.chat.id);
-  } else {
-    store.dispatch("leaveRoom", props.chat.id);
-  }
+  try {
+    store.dispatch(
+      isOwnerUser.value ? "removeChat" : "leaveChat",
+      props.chat.id.toString(),
+    ).then(() => {
+      router.push("/");
 
-  router.push('/');
+      const message = isOwnerUser.value
+          ? "You have successfully deleted chat!"
+          : "You have successfully left the chat!";
+      NotificationService.success(message);
+    });
+  } catch (e) {
+    NotificationService.error("Error!", e?.toString());
+  }
 };
 
 </script>

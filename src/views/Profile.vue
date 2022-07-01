@@ -119,7 +119,7 @@ onMounted(async () => {
   await ApiUserService.findUserById(uid.value).then(json => {
     const user = UserMapperUtil.mapToUser(json.data);
     const roomsData = json.data.rooms?.map((data) => ({
-      room: RoomsMapperUtil.mapToRoom(data["room"]),
+      room: RoomsMapperUtil.mapToChat(data["room"]),
       role: data["role"]
     } as { room: Room, role: RoomRole }));
 

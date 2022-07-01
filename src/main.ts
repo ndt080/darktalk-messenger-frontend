@@ -4,8 +4,9 @@ import router from "./router";
 import { store, key } from "./store";
 
 import setupTokenInterceptor  from "@/middlewares/token.interceptor";
-import "./registerServiceWorker";
+import setupErrorInterceptor from "@/middlewares/error.interceptor";
 
+import "./registerServiceWorker";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "@fortawesome/fontawesome-free/js/all.min";
 import "mosha-vue-toastify/dist/style.css";
@@ -13,6 +14,7 @@ import "@/assets/styles/icons.scss";
 
 
 setupTokenInterceptor();
+setupErrorInterceptor();
 
 const app = createApp(App);
 app.use(store, key);
